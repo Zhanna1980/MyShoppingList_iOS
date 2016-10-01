@@ -113,8 +113,15 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             tblItemsInList.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
         }
         else{
-            
+            showAlertController();
         }
+    }
+    
+    func showAlertController(){
+        let alertController = UIAlertController(title: nil, message: "There is such item in the list", preferredStyle: .alert);
+        let actionOK = UIAlertAction(title: "Ok", style: .default, handler: nil);
+        alertController.addAction(actionOK);
+        present(alertController, animated: true, completion: nil);
     }
     
     // MARK: - Defining a tableView;

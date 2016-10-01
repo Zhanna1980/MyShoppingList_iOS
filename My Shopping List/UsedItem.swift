@@ -10,5 +10,4 @@ import Foundation
 
 class UsedItem{
     static var usedItems: [String] = [String]();
-    
 }
