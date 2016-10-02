@@ -110,12 +110,15 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             var newItem = Item(name: itemName);
             currentList.itemList.insert(newItem, at: 0);
             UsedItem.usedItems.append(itemName);
-            tblItemsInList.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
+            //tblItemsInList.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
+            tblItemsInList.reloadSections([0], with: .automatic);
         }
         else{
             showAlertController();
         }
     }
+    
+    // MARK: - function that shows alert while adding an item that already exists
     
     func showAlertController(){
         let alertController = UIAlertController(title: nil, message: "There is such item in the list", preferredStyle: .alert);
@@ -146,7 +149,12 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
         }
+        if indexPath.section == 0{
         cell?.textLabel?.text = currentList.itemList[indexPath.row].name;
+        }
+        else{
+           cell?.textLabel?.text = currentList.itemsInTheCart[indexPath.row].name;
+        }
         return cell!;
     }
     
@@ -158,8 +166,48 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if editingStyle == .delete{
             currentList.itemList.remove(at: indexPath.row);
             tableView.deleteRows(at: [indexPath], with: .left);
-            
+            tblItemsInList.reloadSections([indexPath.section], with: .automatic);
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        return (section == 0 ? 0 : 50);
+    }
+    
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var title = "";
+        if section == 1{
+            title = "Items in the cart: "
+        }
+        return newLabelWithTitle(title: title);
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        var count = 0;
+        var title: String = "";
+        if section == 0{
+            count = currentList.itemList.count;
+        }else{
+            count = currentList.itemsInTheCart.count;
+        }
+        if count != 1{
+            title = "\(count) items";
+        }
+        else{
+            title = "\(count) item"
+        }
+        return newLabelWithTitle(title: title);
+        
+    }
+    
+    func newLabelWithTitle(title: String) -> UILabel{
+        let label = UILabel();
+        label.text = title;
+        label.backgroundColor = UIColor.clear;
+        label.sizeToFit();
+        return label;
     }
 
     
