@@ -35,6 +35,9 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         btnBack.addTarget(self, action: #selector(CurrentListViewController.btnBackClicked(_:)), for: .touchUpInside);
         view.addSubview(btnBack);
         
+       /* var checkbox = Checkbox(position: CGPoint(x: btnBack.frame.maxX + 5, y: btnBack.center.y));
+        view.addSubview(checkbox);*/
+        
         lblTitle = UILabel(frame: CGRect(x: margin, y: btnBack.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50));
         lblTitle.textColor = UIColor.red;
         lblTitle.textAlignment = .center;
@@ -148,13 +151,15 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if cell == nil{
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
-        }
+                                }
         if indexPath.section == 0{
-        cell?.textLabel?.text = currentList.itemList[indexPath.row].name;
+            cell?.textLabel?.text = currentList.itemList[indexPath.row].name;
+            
+            
         }
         else{
-           cell?.textLabel?.text = currentList.itemsInTheCart[indexPath.row].name;
-        }
+            cell?.textLabel?.text = currentList.itemsInTheCart[indexPath.row].name;
+            }
         return cell!;
     }
     
@@ -209,6 +214,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         label.sizeToFit();
         return label;
     }
+    
+    
 
     
     
