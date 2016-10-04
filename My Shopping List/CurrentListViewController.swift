@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate {
     
     var lblTitle: UILabel!;
     var btnBack: UIButton!;
@@ -30,7 +30,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
         
         btnBack = UIButton(type: .system);
-        btnBack.frame = CGRect(x: margin, y: 30, width: 100, height: 50);
+        btnBack.frame = CGRect(x: margin, y: 30, width: 100, height: 30);
         btnBack.setTitle("<<Back", for: .normal);
         btnBack.addTarget(self, action: #selector(CurrentListViewController.btnBackClicked(_:)), for: .touchUpInside);
         view.addSubview(btnBack);
@@ -38,7 +38,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
        /* var checkbox = Checkbox(position: CGPoint(x: btnBack.frame.maxX + 5, y: btnBack.center.y));
         view.addSubview(checkbox);*/
         
-        lblTitle = UILabel(frame: CGRect(x: margin, y: btnBack.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50));
+        lblTitle = UILabel(frame: CGRect(x: margin, y: btnBack.frame.maxY + margin, width: view.frame.width - 2*margin, height: 30));
         lblTitle.textColor = UIColor.red;
         lblTitle.textAlignment = .center;
         lblTitle.font = UIFont.boldSystemFont(ofSize: 14);
@@ -151,14 +151,27 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if cell == nil{
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
-                                }
+            let checkbox = Checkbox(position: CGPoint(x: 5, y: 0));
+            checkbox.center.y = cell!.contentView.center.y;
+            checkbox.delegate = self;
+            cell!.contentView.addSubview(checkbox);
+            
+            let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 100, height: 30));
+            lblItemName.center.y = cell!.contentView.center.y;
+            cell!.contentView.addSubview(lblItemName);
+
+        }
+        let checkbox = cell!.contentView.subviews[0] as! Checkbox;
+        let lblItemName = cell!.contentView.subviews[1] as! UILabel;
         if indexPath.section == 0{
-            cell?.textLabel?.text = currentList.itemList[indexPath.row].name;
-            
-            
+            lblItemName.text = currentList.itemList[indexPath.row].name;
+            checkbox.setChecked(checked: false);
+            checkbox.tag = indexPath.row;
         }
         else{
-            cell?.textLabel?.text = currentList.itemsInTheCart[indexPath.row].name;
+            lblItemName.text = currentList.itemsInTheCart[indexPath.row].name;
+            checkbox.setChecked(checked: true);
+            checkbox.tag = indexPath.row;
             }
         return cell!;
     }
@@ -214,6 +227,26 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         label.sizeToFit();
         return label;
     }
+    // MARK: - Handling checked checkbox event
+    func checkboxWasChecked(checkbox: Checkbox){
+        let index = checkbox.tag;
+        
+        if checkbox.isChecked{
+            //moving item from the itemList to the cart
+            currentList.itemList[index].previousPositionInItemList = index;
+            currentList.itemsInTheCart.insert(currentList.itemList[index], at: 0);
+            currentList.itemList.remove(at: index);
+        }
+        else{
+            // returning item from the cart to the itemList
+            let previousIndex: Int = currentList.itemsInTheCart[index].previousPositionInItemList;
+            let indexToBeReturnedAt: Int = previousIndex < currentList.itemList.count ? previousIndex : currentList.itemList.count;
+            currentList.itemList.insert(currentList.itemsInTheCart[index], at: indexToBeReturnedAt);
+            currentList.itemsInTheCart.remove(at: index);
+        }
+        tblItemsInList.reloadData();
+    }
+    
     
     
 

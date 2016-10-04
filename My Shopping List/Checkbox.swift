@@ -19,7 +19,6 @@ class Checkbox: UIImageView{
     fileprivate static let uncheckedImage: UIImage = #imageLiteral(resourceName: "checkbox-unchecked");
     fileprivate var _position: CGPoint;
     fileprivate var _isChecked: Bool = false;
-    //fileprivate var animator: UIDynamicAnimator = UIDynamicAnimator();
     var delegate: CheckboxWasCheckedDelegate?;
     
     init(position: CGPoint) {
@@ -74,13 +73,14 @@ class Checkbox: UIImageView{
                         self.image = #imageLiteral(resourceName: "checkbox-checked");
                         self._isChecked = true;
                     }
-                    }, completion: nil);
-            });
+                    }, completion: { finished in
+                        if let theDelegate = self.delegate{
+                            theDelegate.checkboxWasChecked(checkbox: self);
+                        }
+                    });
     
-        if let theDelegate = delegate{
-            theDelegate.checkboxWasChecked(checkbox: self);
-        }
+        
+        });
+    
     }
-    
-    
 }

@@ -12,6 +12,7 @@ class Item{
     fileprivate var _name: String;
     fileprivate var _inTheCart: Bool = false;
     fileprivate var _calculations: ItemCalculations?;
+    fileprivate var _previousPositionInItemList: Int = -1;
     
     init (name: String){
         self._name = name;
@@ -34,6 +35,17 @@ class Item{
         }
         set{
             _inTheCart = newValue;
+        }
+    }
+    
+    var previousPositionInItemList: Int{
+        get{
+            return _previousPositionInItemList;
+        }
+        set{
+            if newValue >= 0{
+                _previousPositionInItemList = newValue;
+            }
         }
     }
 
