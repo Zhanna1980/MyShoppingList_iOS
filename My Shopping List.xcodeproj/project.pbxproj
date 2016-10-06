@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2B1D33331D93BC6F0066CB6A /* CurrentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1D33321D93BC6F0066CB6A /* CurrentListViewController.swift */; };
+		2B21EE9B1DA4DC7A00CFCB90 /* OptionsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B21EE9A1DA4DC7A00CFCB90 /* OptionsMenu.swift */; };
 		2B24D07E1DA2657200E1DBD6 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B24D07D1DA2657200E1DBD6 /* Checkbox.swift */; };
 		2BD990C21D9123DE00C24899 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990C11D9123DE00C24899 /* AppDelegate.swift */; };
 		2BD990C41D9123DE00C24899 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990C31D9123DE00C24899 /* ViewController.swift */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		2B1D33321D93BC6F0066CB6A /* CurrentListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentListViewController.swift; sourceTree = "<group>"; };
+		2B21EE9A1DA4DC7A00CFCB90 /* OptionsMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsMenu.swift; sourceTree = "<group>"; };
 		2B24D07D1DA2657200E1DBD6 /* Checkbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		2BD990BE1D9123DE00C24899 /* My Shopping List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Shopping List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BD990C11D9123DE00C24899 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				2BD990D91D91252800C24899 /* ItemCalculations.swift */,
 				2B1D33321D93BC6F0066CB6A /* CurrentListViewController.swift */,
 				2B24D07D1DA2657200E1DBD6 /* Checkbox.swift */,
+				2B21EE9A1DA4DC7A00CFCB90 /* OptionsMenu.swift */,
 			);
 			path = "My Shopping List";
 			sourceTree = "<group>";
@@ -161,6 +164,7 @@
 				2BD990D61D91249A00C24899 /* ShoppingList.swift in Sources */,
 				2B1D33331D93BC6F0066CB6A /* CurrentListViewController.swift in Sources */,
 				2BD990D81D9124B500C24899 /* UsedItem.swift in Sources */,
+				2B21EE9B1DA4DC7A00CFCB90 /* OptionsMenu.swift in Sources */,
 				2BD990C21D9123DE00C24899 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

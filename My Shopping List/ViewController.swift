@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var lblTitle: UILabel!;
     var enterListName: UITextField!;
@@ -37,6 +37,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         enterListName.borderStyle = .roundedRect;
         enterListName.backgroundColor = UIColor.lightGray;
         enterListName.placeholder = "Add a new list";
+        enterListName.delegate = self;
         view.addSubview(enterListName);
         
         btnAddList = UIButton(type: .system);
@@ -57,7 +58,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-    
+    //MARK: - Defining the tableView
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
@@ -95,8 +96,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
 
-    
+    //MARK: Adding a new list
     func btnAddListWasClicked (_ sender: UIButton){
+        processTextFieldData();
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        processTextFieldData();
+        return true;
+    }
+    
+    func processTextFieldData(){
         addListToList();
         enterListName.text = "";
         enterListName.placeholder = "Add a new list";
@@ -118,12 +128,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tblLists.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
     }
     
+    //MARK: - Showing currentListViewController with a specified list
     func showCurrentListViewController(index: Int){
         if currentListViewController == nil{
             currentListViewController = CurrentListViewController();
         }
         currentListViewController.currentList = listsList[index];
-        //self.performSegue(withIdentifier: "toCurrentListViewController", sender: self);
         present(currentListViewController, animated: true, completion: nil);
     }
     

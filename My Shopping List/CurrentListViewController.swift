@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate {
+class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate {
     
     var lblTitle: UILabel!;
     var btnBack: UIButton!;
@@ -17,10 +17,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     var btnAddItem: UIButton!;
     var btnVoiceAdding: UIButton!;
     var tblItemsInList: UITableView!;
+    var optionsMenu: OptionsMenu!;
+    var currentList: ShoppingList!;
     
     let margin: CGFloat = 5;
     
-    var currentList: ShoppingList!;
+    var selectedRow: IndexPath!;
+    var isMenuShown:Bool = false;
     var shouldReloadData: Bool = false;
     
     override func viewDidLoad() {
@@ -35,8 +38,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         btnBack.addTarget(self, action: #selector(CurrentListViewController.btnBackClicked(_:)), for: .touchUpInside);
         view.addSubview(btnBack);
         
-       /* var checkbox = Checkbox(position: CGPoint(x: btnBack.frame.maxX + 5, y: btnBack.center.y));
-        view.addSubview(checkbox);*/
+        
         
         lblTitle = UILabel(frame: CGRect(x: margin, y: btnBack.frame.maxY + margin, width: view.frame.width - 2*margin, height: 30));
         lblTitle.textColor = UIColor.red;
@@ -45,10 +47,16 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         lblTitle.text = currentList.name;
         view.addSubview(lblTitle);
         
+        optionsMenu = OptionsMenu(view: view, options: [
+                        Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
+                        Option(icon: #imageLiteral(resourceName: "ic_add_a_photo"), label: "Add a photo"),
+                        Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
+        optionsMenu.optionWasSelectedDelegate = self;
         enterItemName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + 5, width: view.frame.width - 4*margin - 100, height: 50));
         enterItemName.borderStyle = .roundedRect;
         enterItemName.placeholder = "Enter an item name";
         enterItemName.backgroundColor = UIColor.lightGray;
+        enterItemName.delegate = self;
         view.addSubview(enterItemName);
         
         btnAddItem = UIButton(type: .system);
@@ -70,11 +78,15 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         tblItemsInList.delegate = self;
         view.addSubview(tblItemsInList);
         
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (CurrentListViewController.handlingTaps(_:)));
+        view.addGestureRecognizer(tapGestureRecognizer);
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         if shouldReloadData{
-           lblTitle.text = currentList.name;
+            lblTitle.text = currentList.name;
+            tblItemsInList.reloadData();
         }
         shouldReloadData = false;
     }
@@ -89,16 +101,26 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - Adding an item to list;
     
     func btnAddItemClicked(_ sender: UIButton){
+        processTextFieldData();
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        processTextFieldData();
+        return true;
+    }
+    
+    
+    func btnVoiceAddingClicked(_ sender: UIButton){
+        
+    }
+    
+    func processTextFieldData(){
         if enterItemName.hasText{
             let itemName = enterItemName.text;
             addToListItem(itemName: itemName!);
         }
         enterItemName.text = "";
         enterItemName.placeholder = "Enter an item name";
-    }
-    
-    func btnVoiceAddingClicked(_ sender: UIButton){
-        
     }
     
     func addToListItem (itemName: String){
@@ -113,7 +135,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             var newItem = Item(name: itemName);
             currentList.itemList.insert(newItem, at: 0);
             UsedItem.usedItems.append(itemName);
-            //tblItemsInList.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
             tblItemsInList.reloadSections([0], with: .automatic);
         }
         else{
@@ -145,6 +166,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    // defining a cell:
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "identifier");
         
@@ -159,6 +181,9 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 100, height: 30));
             lblItemName.center.y = cell!.contentView.center.y;
             cell!.contentView.addSubview(lblItemName);
+            let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
+            //longPressRecognizer.allowableMovement = 5;
+            cell?.addGestureRecognizer(longPressRecognizer);
 
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
@@ -227,10 +252,12 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         label.sizeToFit();
         return label;
     }
+    
+    
     // MARK: - Handling checked checkbox event
     func checkboxWasChecked(checkbox: Checkbox){
         let index = checkbox.tag;
-        
+        hideMenuIfItIsShown();
         if checkbox.isChecked{
             //moving item from the itemList to the cart
             currentList.itemList[index].previousPositionInItemList = index;
@@ -247,6 +274,53 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         tblItemsInList.reloadData();
     }
     
+    
+    //MARK: - Option from menu was selected:
+    
+    func optionWasSelected (optionIndex: Int){
+        print("index \(optionIndex), row \(selectedRow.row)");
+        
+        
+    }
+    
+    
+    //MARK: Showing and hiding optionsMenu
+    
+    // hiding menu if it is shown 
+    
+    func hideMenuIfItIsShown(){
+        if isMenuShown {
+            optionsMenu.hide();
+            selectedRow = nil;
+            isMenuShown = false;
+        }
+    }
+    
+    func handlingTaps(_ sender: UITapGestureRecognizer){
+        hideMenuIfItIsShown();
+        if enterItemName.isFirstResponder {
+            enterItemName.resignFirstResponder();
+        }
+    }
+    
+    // showing menu on longPress:
+    
+    func handlingLongPressOnRow(_ sender: UILongPressGestureRecognizer){
+        let row = (sender.view as! UITableViewCell).contentView.subviews[0].tag;
+        let section = ((sender.view as! UITableViewCell).contentView.subviews[0] as! Checkbox).isChecked ? 1 : 0;
+        selectedRow = IndexPath(row: row, section: section);
+        tblItemsInList.selectRow(at: selectedRow, animated: false, scrollPosition: .none);
+        enterItemName.resignFirstResponder();
+        if !isMenuShown{
+            optionsMenu.show();
+            isMenuShown = true;
+        }
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        enterItemName.becomeFirstResponder();
+        hideMenuIfItIsShown();
+    }
     
     
 
