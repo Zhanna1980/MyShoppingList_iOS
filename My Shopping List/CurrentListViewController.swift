@@ -206,8 +206,14 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
         if editingStyle == .delete{
+            if indexPath.section == 0{
             currentList.itemList.remove(at: indexPath.row);
+            }
+            else{
+                currentList.itemsInTheCart.remove(at: indexPath.row);
+            }
             tableView.deleteRows(at: [indexPath], with: .left);
             tblItemsInList.reloadSections([indexPath.section], with: .automatic);
         }
@@ -258,6 +264,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     func checkboxWasChecked(checkbox: Checkbox){
         let index = checkbox.tag;
         hideMenuIfItIsShown();
+        enterItemName.resignFirstResponder();
         if checkbox.isChecked{
             //moving item from the itemList to the cart
             currentList.itemList[index].previousPositionInItemList = index;
@@ -278,9 +285,48 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     //MARK: - Option from menu was selected:
     
     func optionWasSelected (optionIndex: Int){
-        print("index \(optionIndex), row \(selectedRow.row)");
+        switch optionIndex {
+        case 0:
+            editSelectedItem();
+            break;
+        case 1:
+            addPhotoToSelectedItem();
+            break;
+        case 2:
+            deleteSelectedItem();
+            break;
+        default:
+            break;
+        }
         
-        
+    }
+    
+    func editSelectedItem(){
+        if selectedRow != nil{
+            
+        }
+        hideMenuIfItIsShown();
+    }
+    
+    func addPhotoToSelectedItem(){
+        if selectedRow != nil{
+            
+        }
+        hideMenuIfItIsShown();
+    }
+    
+    func deleteSelectedItem(){
+        if selectedRow != nil{
+            if selectedRow.section == 0{
+                currentList.itemList.remove(at: selectedRow.row);
+            }
+            else{
+                currentList.itemsInTheCart.remove(at: selectedRow.row);
+            }
+            tblItemsInList.deleteRows(at: [selectedRow], with: .left);
+            tblItemsInList.reloadSections([selectedRow.section], with: .automatic);
+        }
+        hideMenuIfItIsShown();
     }
     
     
