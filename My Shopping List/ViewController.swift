@@ -8,18 +8,20 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, OptionWasSelectedDelegate {
     
     var lblTitle: UILabel!;
     var enterListName: UITextField!;
     var btnAddList: UIButton!;
     var tblLists: UITableView!;
     var currentListViewController: CurrentListViewController!;
+    var optionsMenu: OptionsMenu!;
     
     let margin: CGFloat = 5;
     var listsList: [ShoppingList] = [ShoppingList]();
     let dateFormatter = DateFormatter();
-    
+    var selectedRow: Int?;
+    var isMenuShown:Bool = false;
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +34,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         lblTitle.textAlignment = .center;
         lblTitle.text = "My lists:";
         view.addSubview(lblTitle);
+        
+        optionsMenu = OptionsMenu(view: view, options: [
+            Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
+            Option(icon: #imageLiteral(resourceName: "share-variant"), label: "Share"),
+            Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
+        optionsMenu.optionWasSelectedDelegate = self;
         
         enterListName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50));
         enterListName.borderStyle = .roundedRect;
@@ -52,7 +60,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tblLists.dataSource = self;
         view.addSubview(tblLists);
         
-        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (ViewController.handlingTaps(_:)));
+        tapGestureRecognizer.cancelsTouchesInView = false;
+        view.addGestureRecognizer(tapGestureRecognizer);
         
         
     }
@@ -74,9 +84,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if cell == nil{
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
+            let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
+            cell?.addGestureRecognizer(longPressRecognizer);
         }
         cell!.textLabel?.text = listsList[indexPath.row].name;
         cell!.detailTextLabel?.text = listsList[indexPath.row].date;
+        cell!.tag = indexPath.row;
         return cell!;
     }
     
@@ -126,6 +139,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         var newList = ShoppingList(name: enteredListName, date: stringDate);
         listsList.insert(newList, at: 0);
         tblLists.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
+        // I need to reload table in order to keep cell tag up-to-date
+        tblLists.reloadSections([0], with: .automatic);
     }
     
     //MARK: - Showing currentListViewController with a specified list
@@ -135,6 +150,85 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         currentListViewController.currentList = listsList[index];
         present(currentListViewController, animated: true, completion: nil);
+    }
+    
+    //MARK: - Option from menu was selected:
+    
+    func optionWasSelected (optionIndex: Int){
+        switch optionIndex {
+        case 0:
+            editSelectedList();
+            break;
+        case 1:
+            shareSelectedList();
+            break;
+        case 2:
+            deleteSelectedList();
+            break;
+        default:
+            break;
+        }
+        
+    }
+    
+    func editSelectedList(){
+        if selectedRow != nil{
+            
+        }
+        hideMenuIfItIsShown();
+    }
+    
+    func shareSelectedList(){
+        if selectedRow != nil{
+            
+        }
+        hideMenuIfItIsShown();
+    }
+    
+    func deleteSelectedList(){
+        if let theSelectedRow = selectedRow {
+            listsList.remove(at: theSelectedRow);
+        
+            tblLists.deleteRows(at: [IndexPath(row: theSelectedRow, section: 0)], with: .left);
+            hideMenuIfItIsShown();
+        }
+    }
+
+    
+    //MARK: Showing and hiding optionsMenu
+    
+    // hiding menu if it is shown
+    
+    func hideMenuIfItIsShown(){
+        if isMenuShown {
+            optionsMenu.hide();
+            selectedRow = nil;
+            isMenuShown = false;
+        }
+    }
+    
+    func handlingTaps(_ sender: UITapGestureRecognizer){
+        hideMenuIfItIsShown();
+        if enterListName.isFirstResponder {
+            enterListName.resignFirstResponder();
+        }
+    }
+    
+    // showing menu on longPress:
+    
+    func handlingLongPressOnRow(_ sender: UILongPressGestureRecognizer){
+        selectedRow = sender.view?.tag;
+        tblLists.selectRow(at: IndexPath(row: selectedRow!, section: 0), animated: false, scrollPosition: .none);
+        enterListName.resignFirstResponder();
+        if !isMenuShown{
+            optionsMenu.show();
+            isMenuShown = true;
+        }
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        enterListName.becomeFirstResponder();
+        hideMenuIfItIsShown();
     }
     
    

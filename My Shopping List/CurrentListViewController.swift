@@ -52,6 +52,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                         Option(icon: #imageLiteral(resourceName: "ic_add_a_photo"), label: "Add a photo"),
                         Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
+        
         enterItemName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + 5, width: view.frame.width - 4*margin - 100, height: 50));
         enterItemName.borderStyle = .roundedRect;
         enterItemName.placeholder = "Enter an item name";
@@ -79,6 +80,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         view.addSubview(tblItemsInList);
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (CurrentListViewController.handlingTaps(_:)));
+        tapGestureRecognizer.cancelsTouchesInView = false;
         view.addGestureRecognizer(tapGestureRecognizer);
         
     }
@@ -182,7 +184,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             lblItemName.center.y = cell!.contentView.center.y;
             cell!.contentView.addSubview(lblItemName);
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
-            //longPressRecognizer.allowableMovement = 5;
             cell?.addGestureRecognizer(longPressRecognizer);
 
         }
