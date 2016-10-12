@@ -9,25 +9,43 @@
 import Foundation
 
 class ItemCalculations{
-    static var units: [String] = [String]();
-    fileprivate var _unit: String?;
+    static var units: [String] = ["bag", "bottle", "box", "bunch", "can", "case", "cm", "dl", "dozen", "g", "gallon", "jar", "kg", "l", "large", "lbs", "m", "medium", "ml", "pack", "pair", "piece", "roll", "small"];
+    fileprivate var _unit: String;
     fileprivate var _quantity: Float;
-    fileprivate var _price: Float?;
-    fileprivate var _sum: Float?;
+    
     
     init(quantity: Float){
         self._quantity = quantity;
+        self._unit = "";
     }
     
     var unit: String {
         get{
-            if let theUnit = _unit{
-                return theUnit
+            return _unit;
+        }
+        set{
+            if !newValue.isEmpty && !ItemCalculations.units.contains(newValue){
+                ItemCalculations.units.append(newValue);
             }
-            else{
-                return "nil";
+            _unit = newValue;
+        }
+    }
+    
+    var quantity: Float{
+        get{
+            return _quantity;
+        }
+        set{
+            if newValue > 0{
+                _quantity = newValue;
             }
         }
     }
+    
+    func toString () -> String {
+        return "\(_quantity) \(_unit)";
+        
+    }
+    
     
 }

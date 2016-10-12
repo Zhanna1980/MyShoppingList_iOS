@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Speech
 
 class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate {
     
@@ -19,6 +20,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     var tblItemsInList: UITableView!;
     var optionsMenu: OptionsMenu!;
     var currentList: ShoppingList!;
+    var editItemViewController: EditItemViewController!;
     
     let margin: CGFloat = 5;
     
@@ -304,10 +306,17 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
     func editSelectedItem(){
         if selectedRow != nil{
+            if editItemViewController == nil{
+                editItemViewController = EditItemViewController();
+            }
+            editItemViewController.editedItem = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
+            present(editItemViewController, animated: true, completion: nil);
             
         }
         hideMenuIfItIsShown();
     }
+    
+    
     
     func addPhotoToSelectedItem(){
         if selectedRow != nil{

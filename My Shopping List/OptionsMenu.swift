@@ -74,13 +74,13 @@ class OptionsMenu: UIView{
     }
     
     func hide(){
-        UIView.animate(withDuration: 1, animations: {() -> Void in
+        UIView.animate(withDuration: 0.3, animations: {() -> Void in
             self.alpha = 0 ;
             }, completion: nil);
     }
     
     func show(){
-        UIView.animate(withDuration: 1, animations: {() -> Void in
+        UIView.animate(withDuration: 0.3, animations: {() -> Void in
             self.alpha = 1 ;
             }, completion: nil);
     }

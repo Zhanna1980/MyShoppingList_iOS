@@ -30,7 +30,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         dateFormatter.dateFormat = "dd/MM/yy HH:mm"
         dateFormatter.locale = Locale.current;
         
-        lblTitle = UILabel(frame: CGRect(x: margin, y: 30, width: view.frame.width - 2*margin, height: 50));
+        lblTitle = UILabel(frame: CGRect(x: margin, y: 40, width: view.frame.width - 2*margin, height: 50));
         lblTitle.textAlignment = .center;
         lblTitle.text = "My lists:";
         view.addSubview(lblTitle);
