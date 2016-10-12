@@ -26,6 +26,7 @@ class ItemCalculations{
         set{
             if !newValue.isEmpty && !ItemCalculations.units.contains(newValue){
                 ItemCalculations.units.append(newValue);
+                ItemCalculations.units = ItemCalculations.units.sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending };
             }
             _unit = newValue;
         }

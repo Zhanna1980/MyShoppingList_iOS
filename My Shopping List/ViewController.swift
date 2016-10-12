@@ -171,6 +171,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 break;
             }
         }
+        hideMenuIfItIsShown();
     }
     //shows alertController for editing the list name:
     func editSelectedList(selectedRow: Int){
@@ -188,19 +189,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         editAlertController.addAction(actionCancel);
 
         present(editAlertController, animated: true, completion: nil);
-        hideMenuIfItIsShown();
     }
     
     func shareSelectedList(selectedRow: Int){
         
-        hideMenuIfItIsShown();
+        
     }
     
     func deleteSelectedList(selectedRow: Int){
         listsList.remove(at: selectedRow);
         tblLists.deleteRows(at: [IndexPath(row: selectedRow, section: 0)], with: .left);
-        hideMenuIfItIsShown();
-    }
+        }
 
     
     //MARK: Showing and hiding optionsMenu
