@@ -320,6 +320,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             self.tblUnitsDropDown.frame = CGRect(x: self.enterUnits.frame.origin.x, y: self.enterUnits.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width, height: 180) ;
             }, completion: { finished in
               self.tblSuggestionsIsShown = true;
+              self.btnOpenUnitsDropDown.setImage(#imageLiteral(resourceName: "ic_arrow_drop_up"), for: .normal);
         });
     }
     
@@ -328,6 +329,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             self.tblUnitsDropDown.frame = CGRect(x: self.enterUnits.frame.origin.x, y: self.enterUnits.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width, height: 0) ;
             }, completion: { finished in
                 self.tblSuggestionsIsShown = false;
+                self.btnOpenUnitsDropDown.setImage(#imageLiteral(resourceName: "ic_arrow_drop_down"), for: .normal);
         });
     }
     
@@ -347,10 +349,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         enterUnits.resignFirstResponder();
         enterCategory.resignFirstResponder();
         notes.resignFirstResponder();
-        /*if tblSuggestionsIsShown{
-            shouldShowSortedSuggestions = false;
-            hideSuggestions();
-        }*/
+
         
     }
     

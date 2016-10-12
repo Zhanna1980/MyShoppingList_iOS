@@ -16,6 +16,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var tblLists: UITableView!;
     var currentListViewController: CurrentListViewController!;
     var optionsMenu: OptionsMenu!;
+    var editAlertController: UIAlertController!;
     
     let margin: CGFloat = 5;
     var listsList: [ShoppingList] = [ShoppingList]();
@@ -155,43 +156,50 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: - Option from menu was selected:
     
     func optionWasSelected (optionIndex: Int){
-        switch optionIndex {
-        case 0:
-            editSelectedList();
-            break;
-        case 1:
-            shareSelectedList();
-            break;
-        case 2:
-            deleteSelectedList();
-            break;
-        default:
-            break;
+        if let theRow = selectedRow{
+            switch optionIndex {
+            case 0:
+                editSelectedList(selectedRow: theRow);
+                break;
+            case 1:
+                shareSelectedList(selectedRow: theRow);
+                break;
+            case 2:
+                deleteSelectedList(selectedRow: theRow);
+                break;
+            default:
+                break;
+            }
         }
-        
     }
-    
-    func editSelectedList(){
-        if selectedRow != nil{
-            
+    //shows alertController for editing the list name:
+    func editSelectedList(selectedRow: Int){
+        
+        editAlertController = UIAlertController(title: "Edit your list name:", message: nil, preferredStyle: .alert);
+        editAlertController.addTextField { (textField: UITextField) in
+            textField.text = self.listsList[selectedRow].name;
         }
+        let actionDone = UIAlertAction(title: "Done", style: .default, handler: { [weak self](action: UIAlertAction) in
+                self!.listsList[selectedRow].name = self!.editAlertController.textFields![0].text!
+                self!.tblLists.reloadRows(at: [IndexPath(row: selectedRow, section: 0)], with: .automatic);
+                });
+        editAlertController.addAction(actionDone);
+        let actionCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
+        editAlertController.addAction(actionCancel);
+
+        present(editAlertController, animated: true, completion: nil);
         hideMenuIfItIsShown();
     }
     
-    func shareSelectedList(){
-        if selectedRow != nil{
-            
-        }
+    func shareSelectedList(selectedRow: Int){
+        
         hideMenuIfItIsShown();
     }
     
-    func deleteSelectedList(){
-        if let theSelectedRow = selectedRow {
-            listsList.remove(at: theSelectedRow);
-        
-            tblLists.deleteRows(at: [IndexPath(row: theSelectedRow, section: 0)], with: .left);
-            hideMenuIfItIsShown();
-        }
+    func deleteSelectedList(selectedRow: Int){
+        listsList.remove(at: selectedRow);
+        tblLists.deleteRows(at: [IndexPath(row: selectedRow, section: 0)], with: .left);
+        hideMenuIfItIsShown();
     }
 
     

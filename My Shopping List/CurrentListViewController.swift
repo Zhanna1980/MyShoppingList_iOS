@@ -301,7 +301,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         default:
             break;
         }
-        
     }
     
     func editSelectedItem(){
