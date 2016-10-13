@@ -190,12 +190,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         present(editAlertController, animated: true, completion: nil);
     }
-    
+    // option of sharing list of items as one string
     func shareSelectedList(selectedRow: Int){
-        
+        let contentToShare: String = listsList[selectedRow].description();
+        let objectsToShare = [contentToShare] as [Any];
+        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: []);
+            
+        activityVC.excludedActivityTypes = [UIActivityType.assignToContact, UIActivityType.addToReadingList, UIActivityType.saveToCameraRoll];
+            
+        activityVC.popoverPresentationController?.sourceView = optionsMenu.options[1];
+        self.present(activityVC, animated: true, completion: nil);
+       
         
     }
-    
+    // option "delete selected list"
     func deleteSelectedList(selectedRow: Int){
         listsList.remove(at: selectedRow);
         tblLists.deleteRows(at: [IndexPath(row: selectedRow, section: 0)], with: .left);

@@ -41,4 +41,13 @@ class ShoppingList {
         }
     }
     
+    func description() -> String{
+        var description: String = _name + ": ";
+        for var i in 0..<itemList.count{
+            let ending = i < itemList.count - 1 ? ", " : ".";
+            description = description + itemList[i].description() + ending;
+        }
+        return description;
+    }
+    
 }

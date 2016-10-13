@@ -89,6 +89,8 @@ class Item{
         }
     }
     
-    
+    func description() -> String{
+        return (self._name + " " + self._calculations.toString());
+    }
 
 }
