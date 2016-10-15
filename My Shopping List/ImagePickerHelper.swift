@@ -48,21 +48,12 @@ class ImagePickerHelper: NSObject, UIImagePickerControllerDelegate, UINavigation
         
     }
     
-    /*func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        if let theDelegate = delegate{
-            theDelegate.photoWasPicked(image: image);
-        }
-        picker.delegate = nil;
-        picker.dismiss(animated: true, completion: nil);
-    }*/
-    
-    
-
-    
+        
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.delegate = nil;
         picker.dismiss(animated: true, completion: nil);
     }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
     {
         let receivedImage = info[UIImagePickerControllerOriginalImage] as! UIImage;

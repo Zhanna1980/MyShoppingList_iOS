@@ -192,7 +192,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     // option of sharing list of items as one string
     func shareSelectedList(selectedRow: Int){
-        let contentToShare: String = listsList[selectedRow].description();
+        let contentToShare: String = listsList[selectedRow].describeShoppingList();
         let objectsToShare = [contentToShare] as [Any];
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: []);
             

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ShoppingList {
+class ShoppingList: NSObject, NSCoding {
     
     var itemList: [Item];
     var itemsInTheCart: [Item];
@@ -20,6 +20,17 @@ class ShoppingList {
         self._date = date;
         self.itemList = [Item]();
         self.itemsInTheCart = [Item]();
+        super.init();
+    }
+    
+    required convenience init(coder aDecoder: NSCoder){
+        let name = aDecoder.decodeObject(forKey: PropertyKey.nameKey) as! String;
+        let date = aDecoder.decodeObject(forKey: PropertyKey.dateKey) as! String;
+        let itemList = aDecoder.decodeObject(forKey: PropertyKey.itemListKey) as! [Item];
+        let itemsInTheCart = aDecoder.decodeObject(forKey: PropertyKey.itemsInTheCartKey) as! [Item];
+        self.init(name: name, date: date);
+        self.itemList.append(contentsOf: itemList);
+        self.itemsInTheCart.append(contentsOf: itemsInTheCart);
     }
     
     var name: String{
@@ -41,13 +52,23 @@ class ShoppingList {
         }
     }
     
-    func description() -> String{
+    func describeShoppingList() -> String{
         var description: String = _name + ": ";
         for var i in 0..<itemList.count{
             let ending = i < itemList.count - 1 ? ", " : ".";
-            description = description + itemList[i].description() + ending;
+            description = description + itemList[i].describeItem() + ending;
         }
         return description;
     }
+    // MARK: NSCoding
+    
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(_name, forKey: PropertyKey.nameKey);
+        aCoder.encode(_date, forKey: PropertyKey.dateKey);
+        aCoder.encode(itemList, forKey: PropertyKey.itemListKey);
+        aCoder.encode(itemsInTheCart, forKey: PropertyKey.itemsInTheCartKey);
+        
+    }
+
     
 }

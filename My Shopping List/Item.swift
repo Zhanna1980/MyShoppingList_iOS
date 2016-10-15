@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class Item{
+class Item: NSObject, NSCoding{
     fileprivate var _name: String;
     fileprivate var _inTheCart: Bool = false;
     fileprivate var _calculations: ItemCalculations;
@@ -20,7 +20,25 @@ class Item{
     
     init (name: String){
         self._name = name;
-        self._calculations = ItemCalculations(quantity: 1);
+        self._calculations = ItemCalculations(quantity: 1, unit: "");
+        super.init();
+    }
+    
+    required convenience init(coder aDecoder: NSCoder) {
+        let name = aDecoder.decodeObject(forKey: PropertyKey.nameKey) as! String;
+        let calculations = aDecoder.decodeObject(forKey: PropertyKey.calculationsKey) as! ItemCalculations;
+        let inTheCart = aDecoder.decodeBool(forKey: PropertyKey.inTheCartKey);
+        let previousPositionInItemList = aDecoder.decodeInteger(forKey: PropertyKey.previousPositionInItemListKey);
+        let itemImage = aDecoder.decodeObject(forKey: PropertyKey.itemImageKey) as? UIImage;
+        let category = aDecoder.decodeObject(forKey: PropertyKey.categoryKey) as? String;
+        let notes = aDecoder.decodeObject(forKey: PropertyKey.notesKey) as? String;
+        self.init(name: name);
+        self._calculations = calculations;
+        self._previousPositionInItemList = previousPositionInItemList;
+        self._inTheCart = inTheCart;
+        self._itemImage = itemImage;
+        self._category = category;
+        self._notes = notes;
     }
     
     var name: String{
@@ -89,8 +107,18 @@ class Item{
         }
     }
     
-    func description() -> String{
+    func describeItem() -> String{
         return (self._name + " " + self._calculations.toString());
     }
-
+    // MARK: NSCoding
+    
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(_name, forKey: PropertyKey.nameKey);
+        aCoder.encode(_inTheCart, forKey: PropertyKey.inTheCartKey);
+        aCoder.encode(_previousPositionInItemList, forKey: PropertyKey.previousPositionInItemListKey);
+        aCoder.encode(_itemImage, forKey: PropertyKey.itemImageKey);
+        aCoder.encode(_notes, forKey: PropertyKey.notesKey);
+        aCoder.encode(_category, forKey: PropertyKey.categoryKey);
+        aCoder.encode(_calculations, forKey: PropertyKey.calculationsKey);
+    }
 }
