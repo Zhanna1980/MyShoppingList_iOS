@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class EditItemViewController: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate{
+class EditItemViewController: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, PhotoWasPickedDelegate{
     
     var editItemName: UITextField!;
     var lblQuantity: UILabel!;
@@ -21,10 +21,13 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     var enterCategory: UITextField!;
     var lblNotes: UILabel!;
     var notes: UITextView!;
-    var btnAddDeletePhoto: UIButton!;
+    var btnTakePhoto: UIButton!;
+    var btnPickPhoto: UIButton!;
+    var btnDeletePhoto: UIButton!;
     var itemPhoto: UIImageView!;
     var btnCancel: UIButton!;
     var btnDone: UIButton!;
+    var imagePickerHelper: ImagePickerHelper!;
     
     var editedItem: Item!;
     var margin: CGFloat = 5;
@@ -98,14 +101,40 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         notes = UITextView(frame: CGRect(x: margin, y: lblNotes.frame.maxY + margin/2, width: view.frame.width - 2*margin, height: 60));
         view.addSubview(notes);
         
-        btnAddDeletePhoto = UIButton(type: .custom);
-        btnAddDeletePhoto.frame = CGRect(x: margin, y: notes.frame.maxY + margin, width: 50, height: 50);
-        btnAddDeletePhoto.contentMode = .scaleAspectFit;
-        btnAddDeletePhoto.backgroundColor = UIColor.lightGray;
-        btnAddDeletePhoto.addTarget(self, action: #selector(EditItemViewController.openUnitsDropDown(_:)), for: .touchUpInside);
-        view.addSubview(btnAddDeletePhoto);
+        btnTakePhoto = UIButton(type: .custom);
+        btnTakePhoto.frame = CGRect(x: margin, y: notes.frame.maxY + margin, width: 50, height: 50);
+        btnTakePhoto.contentMode = .scaleAspectFit;
+        btnTakePhoto.backgroundColor = UIColor.lightGray;
+        btnTakePhoto.addTarget(self, action: #selector(EditItemViewController.btnTakePhotoClicked(_:)), for: .touchUpInside);
+        btnTakePhoto.setImage(#imageLiteral(resourceName: "ic_add_a_photo"), for: .normal);
+        btnTakePhoto.layer.cornerRadius = 9;
+        btnTakePhoto.layer.borderWidth = 3;
+        btnTakePhoto.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        view.addSubview(btnTakePhoto);
         
-        itemPhoto = UIImageView(frame: CGRect(x: btnAddDeletePhoto.frame.maxX + margin, y: btnAddDeletePhoto.frame.origin.y, width: view.frame.width - btnAddDeletePhoto.frame.maxX - 3*margin, height: view.frame.height - btnAddDeletePhoto.frame.origin.y - margin));
+        btnPickPhoto = UIButton(type: .custom);
+        btnPickPhoto.frame = CGRect(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin, width: 50, height: 50);
+        btnPickPhoto.contentMode = .scaleAspectFit;
+        btnPickPhoto.backgroundColor = UIColor.lightGray;
+        btnPickPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
+        btnPickPhoto.addTarget(self, action: #selector(EditItemViewController.btnPickPhotoClicked(_:)), for: .touchUpInside);
+        btnPickPhoto.layer.cornerRadius = 9;
+        btnPickPhoto.layer.borderWidth = 3;
+        btnPickPhoto.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        view.addSubview(btnPickPhoto);
+        
+        btnDeletePhoto = UIButton(type: .custom);
+        btnDeletePhoto.frame = CGRect(x: btnPickPhoto.frame.origin.x, y: btnPickPhoto.frame.maxY + margin, width: 50, height: 50);
+        btnDeletePhoto.contentMode = .scaleAspectFit;
+        btnDeletePhoto.backgroundColor = UIColor.lightGray;
+        btnDeletePhoto.setImage(#imageLiteral(resourceName: "ic_delete"), for: .normal);
+        btnDeletePhoto.addTarget(self, action: #selector(EditItemViewController.btnDeletePhotoClicked(_:)), for: .touchUpInside);
+        btnDeletePhoto.layer.cornerRadius = 9;
+        btnDeletePhoto.layer.borderWidth = 3;
+        btnDeletePhoto.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        view.addSubview(btnDeletePhoto);
+        
+        itemPhoto = UIImageView(frame: CGRect(x: btnTakePhoto.frame.maxX + margin, y: btnTakePhoto.frame.origin.y, width: view.frame.width - btnTakePhoto.frame.maxX - 3*margin, height: view.frame.height - btnTakePhoto.frame.origin.y - margin));
         itemPhoto.contentMode = .scaleAspectFit;
         view.addSubview(itemPhoto);
         
@@ -119,6 +148,8 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (EditItemViewController.handlingTaps(_:)));
         tapGestureRecognizer.cancelsTouchesInView = false;
         view.addGestureRecognizer(tapGestureRecognizer);
+        
+        imagePickerHelper = ImagePickerHelper(viewController: self);
 
     }
     
@@ -147,12 +178,9 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         }
         if let theImage = editedItem.itemImage{
             itemPhoto.image = theImage;
-            btnAddDeletePhoto.setImage(#imageLiteral(resourceName: "ic_delete"), for: .normal);
         }
         else{
             itemPhoto.backgroundColor = UIColor.lightGray;
-            btnAddDeletePhoto.setImage(#imageLiteral(resourceName: "ic_add_a_photo"), for: .normal);
-
         }
 
         tblSuggestionsIsShown = false;
@@ -207,10 +235,35 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         }
         
     }
+    //MARK: Editing the photo:
     
-    func btnAddDeletePhotoClicked(_ sender: UIButton){
-        
+    func btnTakePhotoClicked(_ sender: UIButton){
+        imagePickerHelper.delegate = self;
+        imagePickerHelper.pickPhoto(shouldTakeNewPhoto: true);
     }
+    
+    func btnPickPhotoClicked(_ sender: UIButton){
+        imagePickerHelper.delegate = self;
+        imagePickerHelper.pickPhoto(shouldTakeNewPhoto: false);
+    }
+    
+    func photoWasPicked(image: UIImage) {
+        
+        editedItem.itemImage = image;
+        itemPhoto.image = image;
+        imagePickerHelper.delegate = nil;
+    }
+    
+    func btnDeletePhotoClicked(_ sender: UIButton){
+        if editedItem.itemImage != nil{
+            editedItem.itemImage = nil;
+            itemPhoto.image = nil;
+            itemPhoto.backgroundColor = UIColor.lightGray;
+        }
+    }
+    
+
+    //MARK: Leaving editViewController:
     
     func btnCancelClicked(_ sender: UIButton){
         if tblSuggestionsIsShown{

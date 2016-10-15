@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Speech
 
-class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate {
+class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate, PhotoWasPickedDelegate {
     
     var lblTitle: UILabel!;
     var btnBack: UIButton!;
@@ -21,6 +21,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     var optionsMenu: OptionsMenu!;
     var currentList: ShoppingList!;
     var editItemViewController: EditItemViewController!;
+    var imagePickerHelper: ImagePickerHelper!;
     
     let margin: CGFloat = 5;
     
@@ -33,6 +34,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
         view.backgroundColor = UIColor.green;
         
+        imagePickerHelper = ImagePickerHelper(viewController: self);
         
         btnBack = UIButton(type: .system);
         btnBack.frame = CGRect(x: margin, y: 30, width: 100, height: 30);
@@ -52,6 +54,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         optionsMenu = OptionsMenu(view: view, options: [
                         Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
                         Option(icon: #imageLiteral(resourceName: "ic_add_a_photo"), label: "Add a photo"),
+                        Option(icon: #imageLiteral(resourceName: "ic_photo"), label: "Pick a photo"),
                         Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
@@ -177,6 +180,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if cell == nil{
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
+            
             let checkbox = Checkbox(position: CGPoint(x: 5, y: 0));
             checkbox.center.y = cell!.contentView.center.y;
             checkbox.delegate = self;
@@ -185,19 +189,36 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 100, height: 30));
             lblItemName.center.y = cell!.contentView.center.y;
             cell!.contentView.addSubview(lblItemName);
+            
+            let itemImageView = UIImageView(frame: CGRect(x: cell!.detailTextLabel!.frame.origin.x - 25, y: 0, width: 25, height: 25));
+            itemImageView.center.y = cell!.contentView.center.y;
+            itemImageView.backgroundColor = UIColor.lightGray;
+            cell!.contentView.addSubview(itemImageView);
+            
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
 
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
         let lblItemName = cell!.contentView.subviews[1] as! UILabel;
+       // let itemImageView = cell!.contentView.subviews[2] as! UIImageView;
+        
         if indexPath.section == 0{
+            
             lblItemName.text = currentList.itemList[indexPath.row].name;
+            cell!.detailTextLabel?.text = currentList.itemList[indexPath.row].calculations.toString();
+            if let theItemImage = currentList.itemList[indexPath.row].itemImage{
+                //itemImageView.image = theItemImage;
+            }
             checkbox.setChecked(checked: false);
             checkbox.tag = indexPath.row;
         }
         else{
             lblItemName.text = currentList.itemsInTheCart[indexPath.row].name;
+            cell!.detailTextLabel?.text = currentList.itemsInTheCart[indexPath.row].calculations.toString();
+            if let theItemImage = currentList.itemsInTheCart[indexPath.row].itemImage{
+                //itemImageView.image = theItemImage;
+            }
             checkbox.setChecked(checked: true);
             checkbox.tag = indexPath.row;
             }
@@ -288,54 +309,64 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     //MARK: - Option from menu was selected:
     
     func optionWasSelected (optionIndex: Int){
-        switch optionIndex {
-        case 0:
-            editSelectedItem();
-            break;
-        case 1:
-            addPhotoToSelectedItem();
-            break;
-        case 2:
-            deleteSelectedItem();
-            break;
-        default:
-            break;
-        }
-    }
-    
-    func editSelectedItem(){
-        if selectedRow != nil{
-            if editItemViewController == nil{
-                editItemViewController = EditItemViewController();
+        if let theRow = selectedRow{
+            switch optionIndex {
+            case 0:
+                editSelectedItem(selectedRow: theRow);
+                break;
+            case 1:
+                addPhotoToSelectedItem(selectedRow: theRow);
+                break;
+            case 2:
+                addPhotoToSelectedItem(selectedRow: theRow);
+                break;
+            case 3:
+                deleteSelectedItem(selectedRow: theRow);
+                break;
+            default:
+                break;
             }
-            editItemViewController.editedItem = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
-            present(editItemViewController, animated: true, completion: nil);
-            
         }
         hideMenuIfItIsShown();
     }
     
-    
-    
-    func addPhotoToSelectedItem(){
-        if selectedRow != nil{
-            
+    func editSelectedItem(selectedRow: IndexPath){
+        
+        if editItemViewController == nil{
+            editItemViewController = EditItemViewController();
         }
-        hideMenuIfItIsShown();
+        editItemViewController.editedItem = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
+        present(editItemViewController, animated: true, completion: nil);
+       
     }
     
-    func deleteSelectedItem(){
-        if selectedRow != nil{
-            if selectedRow.section == 0{
-                currentList.itemList.remove(at: selectedRow.row);
-            }
-            else{
-                currentList.itemsInTheCart.remove(at: selectedRow.row);
-            }
-            tblItemsInList.deleteRows(at: [selectedRow], with: .left);
-            tblItemsInList.reloadSections([selectedRow.section], with: .automatic);
+    
+    
+    func addPhotoToSelectedItem(selectedRow: IndexPath){
+        imagePickerHelper.delegate = self;
+        imagePickerHelper.pickPhoto(shouldTakeNewPhoto: true);
+    }
+    
+    func pickPhotoFromPhotoLibrary(selectedRow: IndexPath){
+        imagePickerHelper.delegate = self;
+        imagePickerHelper.pickPhoto(shouldTakeNewPhoto: false);
+    }
+    
+    func photoWasPicked(image: UIImage) {
+        imagePickerHelper.delegate = nil;
+    }
+    
+    func deleteSelectedItem(selectedRow: IndexPath){
+        
+        if selectedRow.section == 0{
+            currentList.itemList.remove(at: selectedRow.row);
         }
-        hideMenuIfItIsShown();
+        else{
+            currentList.itemsInTheCart.remove(at: selectedRow.row);
+        }
+        tblItemsInList.deleteRows(at: [selectedRow], with: .left);
+        tblItemsInList.reloadSections([selectedRow.section], with: .automatic);
+        
     }
     
     
