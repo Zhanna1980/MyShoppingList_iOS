@@ -34,6 +34,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     var sortedSuggestions: [String] = [String]();
     var tblSuggestionsIsShown: Bool = false;
     var shouldShowSortedSuggestions: Bool = false;
+    var shouldRefillData: Bool = false;
     
     override func viewDidLoad() {
         view.backgroundColor = UIColor.green;
@@ -154,7 +155,9 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        fillDataInViewController();
+        if shouldRefillData{
+            fillDataInViewController();
+        }
     }
     
     
@@ -180,12 +183,14 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             itemPhoto.image = theImage;
         }
         else{
+            itemPhoto.image = nil;
             itemPhoto.backgroundColor = UIColor.lightGray;
         }
 
         tblSuggestionsIsShown = false;
         shouldShowSortedSuggestions = false;
         tblUnitsDropDown.reloadData();
+        shouldRefillData = false;
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -249,7 +254,6 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     
     func photoWasPicked(image: UIImage) {
         
-        editedItem.itemImage = image;
         itemPhoto.image = image;
         imagePickerHelper.delegate = nil;
     }
@@ -270,6 +274,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             shouldShowSortedSuggestions = false;
             hideSuggestions();
         }
+        shouldRefillData = true;
         dismiss(animated: true, completion: nil);
     }
     
@@ -312,6 +317,10 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         else{
             editedItem.notes = nil;
         }
+        if let image = itemPhoto.image{
+            editedItem.itemImage = image;
+        }
+        shouldRefillData = true;
         dismiss(animated: true, completion: nil);
     }
     
