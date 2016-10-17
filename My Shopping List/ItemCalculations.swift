@@ -55,8 +55,18 @@ class ItemCalculations: NSObject, NSCoding {
         }
     }
     
+    func quantityToString() -> String{
+        if _quantity.truncatingRemainder(dividingBy: 1) == 0{
+            return String(format: "%.0f", _quantity);
+        }
+        else{
+            return String(format: "%.2f", _quantity);
+        }
+    }
+    
     func toString () -> String {
-        return "\(_quantity) \(_unit)";
+        let ending: String = (_quantity != 1 && _unit != "") ? "s" : "";
+        return quantityToString() + " " + unit + ending;
         
     }
     

@@ -180,44 +180,52 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if cell == nil{
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
+            cell!.contentView.backgroundColor = UIColor.yellow;
             
             let checkbox = Checkbox(position: CGPoint(x: 5, y: 0));
             checkbox.center.y = cell!.contentView.center.y;
             checkbox.delegate = self;
             cell!.contentView.addSubview(checkbox);
             
-            let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 100, height: 30));
+            let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 140, height: 30));
             lblItemName.center.y = cell!.contentView.center.y;
+            lblItemName.backgroundColor = UIColor.cyan;
             cell!.contentView.addSubview(lblItemName);
             
-            let itemImageView = UIImageView(frame: CGRect(x: cell!.detailTextLabel!.frame.origin.x - 25, y: 0, width: 25, height: 25));
-            itemImageView.center.y = cell!.contentView.center.y;
-            itemImageView.backgroundColor = UIColor.lightGray;
-            cell!.contentView.addSubview(itemImageView);
+            let lblItemCalculations = UILabel(frame: CGRect(x: cell!.contentView.frame.width - 100, y: 0, width: 100, height: 30));
+            lblItemCalculations.center.y = cell!.contentView.center.y;
+            lblItemCalculations.textColor = UIColor.blue;
+            lblItemCalculations.backgroundColor = UIColor.lightGray;
+            lblItemCalculations.textAlignment = .right;
+            cell!.contentView.addSubview(lblItemCalculations);
+
             
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
+            print(cell!.contentView.frame.width);
 
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
         let lblItemName = cell!.contentView.subviews[1] as! UILabel;
-       // let itemImageView = cell!.contentView.subviews[2] as! UIImageView;
+        let lblItemCalculations = cell!.contentView.subviews[2] as! UILabel;
         
         if indexPath.section == 0{
             
             lblItemName.text = currentList.itemList[indexPath.row].name;
-            cell!.detailTextLabel?.text = currentList.itemList[indexPath.row].calculations.toString();
+            lblItemCalculations.text = currentList.itemList[indexPath.row].calculations.toString();
+            // TO DO: 
             if let theItemImage = currentList.itemList[indexPath.row].itemImage{
-                //itemImageView.image = theItemImage;
+                
             }
             checkbox.setChecked(checked: false);
             checkbox.tag = indexPath.row;
         }
         else{
             lblItemName.text = currentList.itemsInTheCart[indexPath.row].name;
-            cell!.detailTextLabel?.text = currentList.itemsInTheCart[indexPath.row].calculations.toString();
+            lblItemCalculations.text = currentList.itemsInTheCart[indexPath.row].calculations.toString();
+            
             if let theItemImage = currentList.itemsInTheCart[indexPath.row].itemImage{
-                //itemImageView.image = theItemImage;
+                
             }
             checkbox.setChecked(checked: true);
             checkbox.tag = indexPath.row;

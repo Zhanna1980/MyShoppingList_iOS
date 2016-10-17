@@ -117,7 +117,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnPickPhoto.frame = CGRect(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin, width: 50, height: 50);
         btnPickPhoto.contentMode = .scaleAspectFit;
         btnPickPhoto.backgroundColor = UIColor.lightGray;
-        btnPickPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
+        btnPickPhoto.setImage(#imageLiteral(resourceName: "ic_photo_library"), for: .normal);
         btnPickPhoto.addTarget(self, action: #selector(EditItemViewController.btnPickPhotoClicked(_:)), for: .touchUpInside);
         btnPickPhoto.layer.cornerRadius = 9;
         btnPickPhoto.layer.borderWidth = 3;
@@ -164,7 +164,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     //MARK: - Fills data according to the edited item
     func fillDataInViewController(){
         editItemName.text = editedItem.name;
-        enterQuantity.text = String(describing: editedItem.calculations.quantity);
+        enterQuantity.text = editedItem.calculations.quantityToString();
         enterUnits.text = editedItem.calculations.unit;
         
         if let theCategory = editedItem.category{
