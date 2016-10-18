@@ -9,10 +9,9 @@
 import Foundation
 
 class ItemCalculations: NSObject, NSCoding {
-    static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("itemCalculations");
     
-    static var units: [String] = ["bag", "bottle", "box", "bunch", "can", "case", "cm", "dl", "dozen", "g", "gallon", "jar", "kg", "l", "large", "lbs", "m", "medium", "ml", "pack", "pair", "piece", "roll", "small"];
+    // MARK: Properties
+    
     
     fileprivate var _unit: String;
     fileprivate var _quantity: Float;
@@ -36,9 +35,9 @@ class ItemCalculations: NSObject, NSCoding {
             return _unit;
         }
         set{
-            if !newValue.isEmpty && !ItemCalculations.units.contains(newValue){
-                ItemCalculations.units.append(newValue);
-                ItemCalculations.units = ItemCalculations.units.sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending };
+            if !newValue.isEmpty && !CurrentState.instance.units.contains(newValue){
+                CurrentState.instance.units.append(newValue);
+                CurrentState.instance.units = CurrentState.instance.units.sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending };
             }
             _unit = newValue;
         }
@@ -65,9 +64,7 @@ class ItemCalculations: NSObject, NSCoding {
     }
     
     func toString () -> String {
-        let ending: String = (_quantity != 1 && _unit != "") ? "s" : "";
-        return quantityToString() + " " + unit + ending;
-        
+        return quantityToString() + " " + unit;
     }
     
     // MARK: NSCoding

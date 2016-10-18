@@ -321,6 +321,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             editedItem.itemImage = image;
         }
         shouldRefillData = true;
+        CurrentState.instance.saveData();
         dismiss(animated: true, completion: nil);
     }
     
@@ -344,7 +345,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             return sortedSuggestions.count;
         }
         else{
-            return ItemCalculations.units.count;
+            return CurrentState.instance.units.count;
         }
     }
     
@@ -358,7 +359,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         if shouldShowSortedSuggestions{
             cell!.textLabel?.text = sortedSuggestions[indexPath.row];
         }else{
-            cell!.textLabel?.text = ItemCalculations.units[indexPath.row];
+            cell!.textLabel?.text = CurrentState.instance.units[indexPath.row];
         }
         return cell!;
     }
@@ -367,7 +368,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         if shouldShowSortedSuggestions{
             enterUnits.text = sortedSuggestions[indexPath.row];
         }else{
-            enterUnits.text = ItemCalculations.units[indexPath.row];
+            enterUnits.text = CurrentState.instance.units[indexPath.row];
         }
         shouldShowSortedSuggestions = false;
         hideSuggestions();
@@ -397,9 +398,9 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     
     func sortSuggestions(key: String){
         sortedSuggestions.removeAll();
-        for var i in 0..<ItemCalculations.units.count{
-            if ItemCalculations.units[i].hasPrefix(key.localizedLowercase){
-                sortedSuggestions.append(ItemCalculations.units[i]);
+        for var i in 0..<CurrentState.instance.units.count{
+            if CurrentState.instance.units[i].hasPrefix(key.localizedLowercase){
+                sortedSuggestions.append(CurrentState.instance.units[i]);
             }
         }
         shouldShowSortedSuggestions = sortedSuggestions.count > 0

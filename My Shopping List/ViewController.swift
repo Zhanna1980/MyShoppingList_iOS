@@ -19,7 +19,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var editAlertController: UIAlertController!;
     
     let margin: CGFloat = 5;
-    var listsList: [ShoppingList] = [ShoppingList]();
+    
     let dateFormatter = DateFormatter();
     var selectedRow: Int?;
     var isMenuShown:Bool = false;
@@ -27,6 +27,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.green;
+        
+        CurrentState.loadData();
         
         dateFormatter.dateFormat = "dd/MM/yy HH:mm"
         dateFormatter.locale = Locale.current;
@@ -76,7 +78,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return listsList.count;
+        return CurrentState.instance.listsList.count;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -88,8 +90,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
         }
-        cell!.textLabel?.text = listsList[indexPath.row].name;
-        cell!.detailTextLabel?.text = listsList[indexPath.row].date;
+        cell!.textLabel?.text = CurrentState.instance.listsList[indexPath.row].name;
+        cell!.detailTextLabel?.text = CurrentState.instance.listsList[indexPath.row].date;
         cell!.tag = indexPath.row;
         return cell!;
     }
@@ -104,9 +106,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete{
-            listsList.remove(at: indexPath.row);
+            CurrentState.instance.listsList.remove(at: indexPath.row);
             tableView.deleteRows(at: [indexPath], with: .left);
-            
+            CurrentState.instance.saveData();
         }
     }
 
@@ -138,10 +140,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let date = Date();
         let stringDate = dateFormatter.string(from: date);
         var newList = ShoppingList(name: enteredListName, date: stringDate);
-        listsList.insert(newList, at: 0);
+        CurrentState.instance.listsList.insert(newList, at: 0);
         tblLists.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
         // I need to reload table in order to keep cell tag up-to-date
         tblLists.reloadSections([0], with: .automatic);
+        CurrentState.instance.saveData();
+
     }
     
     //MARK: - Showing currentListViewController with a specified list
@@ -149,7 +153,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if currentListViewController == nil{
             currentListViewController = CurrentListViewController();
         }
-        currentListViewController.currentList = listsList[index];
+        currentListViewController.currentList = CurrentState.instance.listsList[index];
         present(currentListViewController, animated: true, completion: nil);
     }
     
@@ -178,11 +182,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         editAlertController = UIAlertController(title: "Edit your list name:", message: nil, preferredStyle: .alert);
         editAlertController.addTextField { (textField: UITextField) in
-            textField.text = self.listsList[selectedRow].name;
+            textField.text = CurrentState.instance.listsList[selectedRow].name;
         }
         let actionDone = UIAlertAction(title: "Done", style: .default, handler: { [weak self](action: UIAlertAction) in
-                self!.listsList[selectedRow].name = self!.editAlertController.textFields![0].text!
+                CurrentState.instance.listsList[selectedRow].name = self!.editAlertController.textFields![0].text!
                 self!.tblLists.reloadRows(at: [IndexPath(row: selectedRow, section: 0)], with: .automatic);
+                CurrentState.instance.saveData();
+
                 });
         editAlertController.addAction(actionDone);
         let actionCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
@@ -192,7 +198,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     // option of sharing list of items as one string
     func shareSelectedList(selectedRow: Int){
-        let contentToShare: String = listsList[selectedRow].describeShoppingList();
+        let contentToShare: String = CurrentState.instance.listsList[selectedRow].describeShoppingList();
         let objectsToShare = [contentToShare] as [Any];
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: []);
             
@@ -205,9 +211,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     // option "delete selected list"
     func deleteSelectedList(selectedRow: Int){
-        listsList.remove(at: selectedRow);
+        CurrentState.instance.listsList.remove(at: selectedRow);
         tblLists.deleteRows(at: [IndexPath(row: selectedRow, section: 0)], with: .left);
-        }
+        CurrentState.instance.saveData();
+
+    }
 
     
     //MARK: Showing and hiding optionsMenu
@@ -251,7 +259,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }
 

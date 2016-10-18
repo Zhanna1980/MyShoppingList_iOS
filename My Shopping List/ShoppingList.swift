@@ -10,6 +10,9 @@ import Foundation
 
 class ShoppingList: NSObject, NSCoding {
     
+    
+    
+    // MARK: Properties:
     var itemList: [Item];
     var itemsInTheCart: [Item];
     fileprivate var _name: String;

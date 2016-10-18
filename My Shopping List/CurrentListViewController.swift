@@ -141,7 +141,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if !isAlreadyInTheList{
             var newItem = Item(name: itemName);
             currentList.itemList.insert(newItem, at: 0);
-            UsedItem.usedItems.append(itemName);
+            CurrentState.instance.usedItems.append(itemName);
+            CurrentState.instance.saveData();
             tblItemsInList.reloadSections([0], with: .automatic);
         }
         else{
@@ -202,7 +203,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
-            print(cell!.contentView.frame.width);
+            //print(cell!.contentView.frame.width);
 
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
@@ -246,6 +247,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             else{
                 currentList.itemsInTheCart.remove(at: indexPath.row);
             }
+            CurrentState.instance.saveData();
             tableView.deleteRows(at: [indexPath], with: .left);
             tblItemsInList.reloadSections([indexPath.section], with: .automatic);
         }
@@ -310,6 +312,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             currentList.itemList.insert(currentList.itemsInTheCart[index], at: indexToBeReturnedAt);
             currentList.itemsInTheCart.remove(at: index);
         }
+        CurrentState.instance.saveData();
         tblItemsInList.reloadData();
     }
     
@@ -372,6 +375,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         else{
             currentList.itemsInTheCart.remove(at: selectedRow.row);
         }
+        CurrentState.instance.saveData();
         tblItemsInList.deleteRows(at: [selectedRow], with: .left);
         tblItemsInList.reloadSections([selectedRow.section], with: .automatic);
         
