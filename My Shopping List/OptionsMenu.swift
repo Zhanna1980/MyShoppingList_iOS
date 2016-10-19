@@ -28,7 +28,7 @@ class OptionsMenu: UIView{
         let numberOfOptions:CGFloat = CGFloat(options.count > 0 ? options.count : 1);
         self._optionWidth = (view.frame.width - 10 - margin*(numberOfOptions-1))/numberOfOptions;
         super.init(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 90));
-        self.backgroundColor = UIColor.yellow;
+        self.backgroundColor = UIColor.white;
         self.alpha = 0;
         self._superview.addSubview(self);
         for option in options{
@@ -47,7 +47,8 @@ class OptionsMenu: UIView{
         //container.backgroundColor = UIColor.lightGray;
         container.layer.cornerRadius = 9;
         container.layer.borderWidth = 3;
-        container.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        //container.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        container.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         self.addSubview(container);
         
         let optionIcon = UIImageView(frame: CGRect(x: 0, y: 5, width: 20, height: 20));

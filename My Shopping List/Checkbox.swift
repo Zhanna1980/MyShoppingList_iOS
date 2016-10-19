@@ -35,7 +35,9 @@ class Checkbox: UIImageView{
     
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        self._position = CGPoint(x:0, y:0);
+        super.init(coder: aDecoder);
+        //fatalError("init(coder:) has not been implemented")
     }
     
     var isChecked: Bool {

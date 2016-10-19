@@ -13,7 +13,7 @@ class Item: NSObject, NSCoding{
     fileprivate var _name: String;
     fileprivate var _inTheCart: Bool = false;
     fileprivate var _calculations: ItemCalculations;
-    fileprivate var _previousPositionInItemList: Int = -1;
+    fileprivate var _previousPositionInItemList: Int = 0;
     fileprivate var _itemImage: UIImage?;
     fileprivate var _category: String?;
     fileprivate var _notes: String?;

@@ -61,25 +61,37 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         enterItemName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + 5, width: view.frame.width - 4*margin - 100, height: 50));
         enterItemName.borderStyle = .roundedRect;
         enterItemName.placeholder = "Enter an item name";
-        enterItemName.backgroundColor = UIColor.lightGray;
+        //enterItemName.backgroundColor = UIColor.lightGray;
+        enterItemName.layer.cornerRadius = 9;
+        enterItemName.layer.borderWidth = 3;
+        enterItemName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         enterItemName.delegate = self;
         view.addSubview(enterItemName);
         
         btnAddItem = UIButton(type: .system);
         btnAddItem.frame = CGRect(x: enterItemName.frame.maxX + margin, y: enterItemName.frame.origin.y, width: 50, height: 50);
         btnAddItem.setTitle("+", for: .normal);
-        btnAddItem.backgroundColor = UIColor.lightGray;
+        btnAddItem.backgroundColor = UIColor.white;
+        btnAddItem.layer.cornerRadius = 9;
+        btnAddItem.layer.borderWidth = 3;
+        btnAddItem.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         btnAddItem.addTarget(self, action: #selector(CurrentListViewController.btnAddItemClicked(_:)), for: .touchUpInside);
         view.addSubview(btnAddItem);
         
         btnVoiceAdding = UIButton(type: .custom);
         btnVoiceAdding.frame = CGRect(x: btnAddItem.frame.maxX + margin, y: enterItemName.frame.origin.y, width: 50, height: 50);
         btnVoiceAdding.setImage(#imageLiteral(resourceName: "ic_mic"), for: .normal);
-        btnVoiceAdding.backgroundColor = UIColor.lightGray;
+        btnVoiceAdding.backgroundColor = UIColor.white;
+        btnVoiceAdding.layer.cornerRadius = 9;
+        btnVoiceAdding.layer.borderWidth = 3;
+        btnVoiceAdding.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         btnVoiceAdding.addTarget(self, action: #selector(CurrentListViewController.btnVoiceAddingClicked(_:)), for: .touchUpInside);
         view.addSubview(btnVoiceAdding);
         
         tblItemsInList = UITableView(frame: CGRect(x: margin, y: enterItemName.frame.maxY + margin, width: view.frame.width - 2*margin, height: view.frame.height - enterItemName.frame.maxY - 2*margin), style: .grouped);
+        tblItemsInList.layer.cornerRadius = 9;
+        tblItemsInList.layer.borderWidth = 3;
+        tblItemsInList.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         tblItemsInList.dataSource = self;
         tblItemsInList.delegate = self;
         view.addSubview(tblItemsInList);
@@ -181,22 +193,33 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if cell == nil{
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
-            cell!.contentView.backgroundColor = UIColor.yellow;
+            //cell!.contentView.backgroundColor = UIColor.yellow;
             
             let checkbox = Checkbox(position: CGPoint(x: 5, y: 0));
             checkbox.center.y = cell!.contentView.center.y;
             checkbox.delegate = self;
             cell!.contentView.addSubview(checkbox);
-            
-            let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 140, height: 30));
+
+            let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 150, height: 30));
             lblItemName.center.y = cell!.contentView.center.y;
-            lblItemName.backgroundColor = UIColor.cyan;
+            //lblItemName.backgroundColor = UIColor.cyan;
             cell!.contentView.addSubview(lblItemName);
             
-            let lblItemCalculations = UILabel(frame: CGRect(x: cell!.contentView.frame.width - 100, y: 0, width: 100, height: 30));
+            
+            let btnPhoto = UIButton(type: .custom);
+            btnPhoto.frame = CGRect(x: lblItemName.frame.maxX, y: 0, width: 30, height: 30);
+            btnPhoto.center.y = cell!.contentView.center.y;
+            btnPhoto.contentMode = .scaleAspectFit;
+            //btnPhoto.backgroundColor = UIColor.green;
+            btnPhoto.isEnabled = false;
+            btnPhoto.addTarget(self, action: #selector(CurrentListViewController.btnPhotoClicked(_:)), for: .touchUpInside);
+            cell!.contentView.addSubview(btnPhoto);
+            
+            let lblItemCalculations = UILabel(frame: CGRect(x: cell!.contentView.frame.width - 90, y: 0, width: 90, height: 30));
             lblItemCalculations.center.y = cell!.contentView.center.y;
             lblItemCalculations.textColor = UIColor.blue;
-            lblItemCalculations.backgroundColor = UIColor.lightGray;
+            //lblItemCalculations.backgroundColor = UIColor.lightGray;
+            lblItemCalculations.font = UIFont.systemFont(ofSize: 14);
             lblItemCalculations.textAlignment = .right;
             cell!.contentView.addSubview(lblItemCalculations);
 
@@ -208,29 +231,42 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
         let lblItemName = cell!.contentView.subviews[1] as! UILabel;
-        let lblItemCalculations = cell!.contentView.subviews[2] as! UILabel;
+        let btnPhoto = cell!.contentView.subviews[2] as! UIButton;
+        let lblItemCalculations = cell!.contentView.subviews[3] as! UILabel;
         
         if indexPath.section == 0{
             
             lblItemName.text = currentList.itemList[indexPath.row].name;
             lblItemCalculations.text = currentList.itemList[indexPath.row].calculations.toString();
-            // TO DO: 
-            if let theItemImage = currentList.itemList[indexPath.row].itemImage{
-                
-            }
             checkbox.setChecked(checked: false);
             checkbox.tag = indexPath.row;
+            // photo button
+            if currentList.itemList[indexPath.row].itemImage != nil {
+                btnPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
+                btnPhoto.isEnabled = true;
+            }
+            else{
+                btnPhoto.setImage(nil, for: .normal);
+                btnPhoto.isEnabled = false;
+            }
+
         }
         else{
             lblItemName.text = currentList.itemsInTheCart[indexPath.row].name;
             lblItemCalculations.text = currentList.itemsInTheCart[indexPath.row].calculations.toString();
-            
-            if let theItemImage = currentList.itemsInTheCart[indexPath.row].itemImage{
-                
-            }
             checkbox.setChecked(checked: true);
             checkbox.tag = indexPath.row;
+            // photo button
+            if currentList.itemsInTheCart[indexPath.row].itemImage != nil {
+                btnPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
+                btnPhoto.isEnabled = true;
             }
+            else{
+                btnPhoto.setImage(nil, for: .normal);
+                btnPhoto.isEnabled = false;
+            }
+            }
+
         return cell!;
     }
     
@@ -252,7 +288,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             tblItemsInList.reloadSections([indexPath.section], with: .automatic);
         }
     }
-    
+    // MARK: Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         return (section == 0 ? 0 : 50);
@@ -260,37 +296,115 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        var title = "";
-        if section == 1{
-            title = "Items in the cart: "
-        }
-        return newLabelWithTitle(title: title);
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        var count = 0;
-        var title: String = "";
-        if section == 0{
-            count = currentList.itemList.count;
-        }else{
-            count = currentList.itemsInTheCart.count;
-        }
-        if count != 1{
-            title = "\(count) items";
-        }
-        else{
-            title = "\(count) item"
-        }
-        return newLabelWithTitle(title: title);
+        let viewContainer = UIView();
+        viewContainer.sizeToFit();
+        viewContainer.layer.borderWidth = 3;
+        viewContainer.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        
+        let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: 150, height: 30));
+        headerTitle.text = section == 1 ? "Items in the cart: " : "";
+        //headerTitle.backgroundColor = UIColor.blue;
+        //headerTitle.textColor = UIColor.blue;
+        headerTitle.font = UIFont.boldSystemFont(ofSize: 16);
+        viewContainer.addSubview(headerTitle);
+        return viewContainer;
         
     }
     
-    func newLabelWithTitle(title: String) -> UILabel{
-        let label = UILabel();
-        label.text = title;
-        label.backgroundColor = UIColor.clear;
-        label.sizeToFit();
-        return label;
+    
+    //MARK: footer and its functions
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 50;
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        
+        var count = 0;
+        if section == 0{
+            count = currentList.itemList.count;
+        }
+        else{
+            count = currentList.itemsInTheCart.count;
+        }
+        let labelText = (count != 1 ? "\(count) items" : "\(count) item");
+
+ 
+        let viewContainer = UIView();
+        viewContainer.sizeToFit();
+        viewContainer.layer.borderWidth = 3;
+        viewContainer.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        
+        let footerLabel = UILabel(frame: CGRect(x: 5, y: 10, width: 100, height: 30));
+        footerLabel.text = labelText;
+        viewContainer.addSubview(footerLabel);
+        
+        let btnCheckUncheckAll = UIButton(type: .system);
+        btnCheckUncheckAll.frame = CGRect(x: footerLabel.frame.maxX + margin, y: footerLabel.frame.origin.y, width: 90, height: 30);
+        btnCheckUncheckAll.setTitle(section == 0 ? "Check all" : "Uncheck all", for: .normal);
+        btnCheckUncheckAll.backgroundColor = UIColor.white;
+        btnCheckUncheckAll.layer.cornerRadius = 9;
+        btnCheckUncheckAll.layer.borderWidth = 3;
+        btnCheckUncheckAll.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnCheckUncheckAll.addTarget(self, action: #selector(CurrentListViewController.checkUncheckAll(_:)), for: .touchUpInside);
+        btnCheckUncheckAll.tag = section;
+        viewContainer.addSubview(btnCheckUncheckAll);
+        
+        let btnDeleteAll = UIButton(type: .system);
+        btnDeleteAll.frame = CGRect(x: btnCheckUncheckAll.frame.maxX + margin, y: btnCheckUncheckAll.frame.origin.y, width: 90, height: 30);
+        btnDeleteAll.setTitle("Delete all", for: .normal);
+        btnDeleteAll.backgroundColor = UIColor.white;
+        btnDeleteAll.layer.cornerRadius = 9;
+        btnDeleteAll.layer.borderWidth = 3;
+        btnDeleteAll.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnDeleteAll.addTarget(self, action: #selector(CurrentListViewController.deleteAll(_:)), for: .touchUpInside);
+        btnDeleteAll.tag = section;
+        viewContainer.addSubview(btnDeleteAll);
+
+        return viewContainer;
+        
+    }
+    
+    func checkUncheckAll(_ sender: UIButton){
+        hideMenuIfItIsShown();
+        let section = sender.tag;
+        let listIsEmpty = section == 0 ? currentList.itemList.isEmpty : currentList.itemsInTheCart.isEmpty;
+        if !listIsEmpty{
+            if section == 0{
+                for item in currentList.itemList{
+                    item.inTheCart = true;
+                    item.previousPositionInItemList = 0;
+                }
+                currentList.itemsInTheCart.append(contentsOf: currentList.itemList);
+                currentList.itemList.removeAll();
+            }
+            else{
+                for item in currentList.itemsInTheCart{
+                    item.inTheCart = false;
+                    item.previousPositionInItemList = 0;
+                }
+                currentList.itemList.append(contentsOf: currentList.itemsInTheCart);
+                currentList.itemsInTheCart.removeAll();
+            }
+            CurrentState.instance.saveData();
+            tblItemsInList.reloadData();
+        }
+    }
+    
+    func deleteAll(_ sender: UIButton){
+        hideMenuIfItIsShown();
+        let section = sender.tag;
+        let listIsEmpty = section == 0 ? currentList.itemList.isEmpty : currentList.itemsInTheCart.isEmpty;
+        if !listIsEmpty{
+            if section == 0{
+                currentList.itemList.removeAll();
+            }
+            else{
+                currentList.itemsInTheCart.removeAll();
+            }
+                CurrentState.instance.saveData();
+                tblItemsInList.reloadSections([section], with: .automatic);
+        }
     }
     
     
@@ -420,7 +534,9 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         hideMenuIfItIsShown();
     }
     
-    
+    func btnPhotoClicked(_ sender: UIButton){
+        
+    }
 
     
     

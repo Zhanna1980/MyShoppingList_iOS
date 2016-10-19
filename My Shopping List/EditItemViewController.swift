@@ -105,34 +105,34 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnTakePhoto = UIButton(type: .custom);
         btnTakePhoto.frame = CGRect(x: margin, y: notes.frame.maxY + margin, width: 50, height: 50);
         btnTakePhoto.contentMode = .scaleAspectFit;
-        btnTakePhoto.backgroundColor = UIColor.lightGray;
+        btnTakePhoto.backgroundColor = UIColor.white;
         btnTakePhoto.addTarget(self, action: #selector(EditItemViewController.btnTakePhotoClicked(_:)), for: .touchUpInside);
         btnTakePhoto.setImage(#imageLiteral(resourceName: "ic_add_a_photo"), for: .normal);
         btnTakePhoto.layer.cornerRadius = 9;
         btnTakePhoto.layer.borderWidth = 3;
-        btnTakePhoto.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        btnTakePhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         view.addSubview(btnTakePhoto);
         
         btnPickPhoto = UIButton(type: .custom);
         btnPickPhoto.frame = CGRect(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin, width: 50, height: 50);
         btnPickPhoto.contentMode = .scaleAspectFit;
-        btnPickPhoto.backgroundColor = UIColor.lightGray;
+        btnPickPhoto.backgroundColor = UIColor.white;
         btnPickPhoto.setImage(#imageLiteral(resourceName: "ic_photo_library"), for: .normal);
         btnPickPhoto.addTarget(self, action: #selector(EditItemViewController.btnPickPhotoClicked(_:)), for: .touchUpInside);
         btnPickPhoto.layer.cornerRadius = 9;
         btnPickPhoto.layer.borderWidth = 3;
-        btnPickPhoto.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        btnPickPhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         view.addSubview(btnPickPhoto);
         
         btnDeletePhoto = UIButton(type: .custom);
         btnDeletePhoto.frame = CGRect(x: btnPickPhoto.frame.origin.x, y: btnPickPhoto.frame.maxY + margin, width: 50, height: 50);
         btnDeletePhoto.contentMode = .scaleAspectFit;
-        btnDeletePhoto.backgroundColor = UIColor.lightGray;
+        btnDeletePhoto.backgroundColor = UIColor.white;
         btnDeletePhoto.setImage(#imageLiteral(resourceName: "ic_delete"), for: .normal);
         btnDeletePhoto.addTarget(self, action: #selector(EditItemViewController.btnDeletePhotoClicked(_:)), for: .touchUpInside);
         btnDeletePhoto.layer.cornerRadius = 9;
         btnDeletePhoto.layer.borderWidth = 3;
-        btnDeletePhoto.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
+        btnDeletePhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         view.addSubview(btnDeletePhoto);
         
         itemPhoto = UIImageView(frame: CGRect(x: btnTakePhoto.frame.maxX + margin, y: btnTakePhoto.frame.origin.y, width: view.frame.width - btnTakePhoto.frame.maxX - 3*margin, height: view.frame.height - btnTakePhoto.frame.origin.y - margin));
