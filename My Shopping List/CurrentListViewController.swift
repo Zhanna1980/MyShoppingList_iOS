@@ -8,20 +8,19 @@
 
 import Foundation
 import UIKit
-import Speech
 
-class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate, PhotoWasPickedDelegate {
+class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate {
     
     var lblTitle: UILabel!;
     var btnBack: UIButton!;
     var enterItemName: UITextField!;
     var btnAddItem: UIButton!;
-    var btnVoiceAdding: UIButton!;
     var tblItemsInList: UITableView!;
     var optionsMenu: OptionsMenu!;
     var currentList: ShoppingList!;
     var editItemViewController: EditItemViewController!;
     var imagePickerHelper: ImagePickerHelper!;
+    var displayImageViewController: DisplayImageViewController!;
     
     let margin: CGFloat = 5;
     
@@ -32,24 +31,27 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
        super.viewDidLoad()
         
-        view.backgroundColor = UIColor.green;
+        view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
         imagePickerHelper = ImagePickerHelper(viewController: self);
         
+        let header = UIView(frame: CGRect(x: margin, y: 30, width: view.frame.width - 2*margin, height: 65));
+        header.tag = OptionsMenu.viewToBeHiddenTag;
+        view.addSubview(header);
+    
         btnBack = UIButton(type: .system);
-        btnBack.frame = CGRect(x: margin, y: 30, width: 100, height: 30);
+        btnBack.frame = CGRect(x: 0, y: 0, width: 100, height: 30);
         btnBack.setTitle("<<Back", for: .normal);
         btnBack.addTarget(self, action: #selector(CurrentListViewController.btnBackClicked(_:)), for: .touchUpInside);
-        view.addSubview(btnBack);
+        header.addSubview(btnBack);
         
         
         
-        lblTitle = UILabel(frame: CGRect(x: margin, y: btnBack.frame.maxY + margin, width: view.frame.width - 2*margin, height: 30));
-        lblTitle.textColor = UIColor.red;
+        lblTitle = UILabel(frame: CGRect(x: 0, y: btnBack.frame.maxY + margin, width: header.frame.width, height: 30));
         lblTitle.textAlignment = .center;
-        lblTitle.font = UIFont.boldSystemFont(ofSize: 14);
+        lblTitle.font = UIFont.systemFont(ofSize: 18);
         lblTitle.text = currentList.name;
-        view.addSubview(lblTitle);
+        header.addSubview(lblTitle);
         
         optionsMenu = OptionsMenu(view: view, options: [
                         Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
@@ -58,13 +60,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                         Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
-        enterItemName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + 5, width: view.frame.width - 4*margin - 100, height: 50));
+        enterItemName = UITextField(frame: CGRect(x: margin, y: header.frame.maxY + margin, width: view.frame.width - 3*margin - 50, height: 50));
         enterItemName.borderStyle = .roundedRect;
         enterItemName.placeholder = "Enter an item name";
-        //enterItemName.backgroundColor = UIColor.lightGray;
         enterItemName.layer.cornerRadius = 9;
         enterItemName.layer.borderWidth = 3;
         enterItemName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        enterItemName.alpha = 0.8;
         enterItemName.delegate = self;
         view.addSubview(enterItemName);
         
@@ -72,26 +74,19 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         btnAddItem.frame = CGRect(x: enterItemName.frame.maxX + margin, y: enterItemName.frame.origin.y, width: 50, height: 50);
         btnAddItem.setTitle("+", for: .normal);
         btnAddItem.backgroundColor = UIColor.white;
+        btnAddItem.alpha = 0.8;
         btnAddItem.layer.cornerRadius = 9;
         btnAddItem.layer.borderWidth = 3;
         btnAddItem.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         btnAddItem.addTarget(self, action: #selector(CurrentListViewController.btnAddItemClicked(_:)), for: .touchUpInside);
         view.addSubview(btnAddItem);
         
-        btnVoiceAdding = UIButton(type: .custom);
-        btnVoiceAdding.frame = CGRect(x: btnAddItem.frame.maxX + margin, y: enterItemName.frame.origin.y, width: 50, height: 50);
-        btnVoiceAdding.setImage(#imageLiteral(resourceName: "ic_mic"), for: .normal);
-        btnVoiceAdding.backgroundColor = UIColor.white;
-        btnVoiceAdding.layer.cornerRadius = 9;
-        btnVoiceAdding.layer.borderWidth = 3;
-        btnVoiceAdding.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
-        btnVoiceAdding.addTarget(self, action: #selector(CurrentListViewController.btnVoiceAddingClicked(_:)), for: .touchUpInside);
-        view.addSubview(btnVoiceAdding);
         
         tblItemsInList = UITableView(frame: CGRect(x: margin, y: enterItemName.frame.maxY + margin, width: view.frame.width - 2*margin, height: view.frame.height - enterItemName.frame.maxY - 2*margin), style: .grouped);
         tblItemsInList.layer.cornerRadius = 9;
         tblItemsInList.layer.borderWidth = 3;
         tblItemsInList.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        tblItemsInList.alpha = 0.8;
         tblItemsInList.dataSource = self;
         tblItemsInList.delegate = self;
         view.addSubview(tblItemsInList);
@@ -108,6 +103,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             tblItemsInList.reloadData();
         }
         shouldReloadData = false;
+        //
+        displayImageViewController = nil;
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -126,11 +123,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         processTextFieldData();
         return true;
-    }
-    
-    
-    func btnVoiceAddingClicked(_ sender: UIButton){
-        
     }
     
     func processTextFieldData(){
@@ -202,7 +194,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
 
             let lblItemName = UILabel(frame: CGRect(x: checkbox.frame.maxX + 5, y: 0, width: cell!.contentView.frame.width - 150, height: 30));
             lblItemName.center.y = cell!.contentView.center.y;
-            //lblItemName.backgroundColor = UIColor.cyan;
             cell!.contentView.addSubview(lblItemName);
             
             
@@ -210,15 +201,14 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             btnPhoto.frame = CGRect(x: lblItemName.frame.maxX, y: 0, width: 30, height: 30);
             btnPhoto.center.y = cell!.contentView.center.y;
             btnPhoto.contentMode = .scaleAspectFit;
-            //btnPhoto.backgroundColor = UIColor.green;
-            btnPhoto.isEnabled = false;
             btnPhoto.addTarget(self, action: #selector(CurrentListViewController.btnPhotoClicked(_:)), for: .touchUpInside);
+            btnPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
+            btnPhoto.isHidden = true;
             cell!.contentView.addSubview(btnPhoto);
             
             let lblItemCalculations = UILabel(frame: CGRect(x: cell!.contentView.frame.width - 90, y: 0, width: 90, height: 30));
             lblItemCalculations.center.y = cell!.contentView.center.y;
             lblItemCalculations.textColor = UIColor.blue;
-            //lblItemCalculations.backgroundColor = UIColor.lightGray;
             lblItemCalculations.font = UIFont.systemFont(ofSize: 14);
             lblItemCalculations.textAlignment = .right;
             cell!.contentView.addSubview(lblItemCalculations);
@@ -226,7 +216,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
-            //print(cell!.contentView.frame.width);
+            
 
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
@@ -242,12 +232,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             checkbox.tag = indexPath.row;
             // photo button
             if currentList.itemList[indexPath.row].itemImage != nil {
-                btnPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
-                btnPhoto.isEnabled = true;
+                btnPhoto.isHidden = false;
+                // tag displays table as a matix:
+                btnPhoto.tag = indexPath.row * 2 + indexPath.section;
             }
             else{
-                btnPhoto.setImage(nil, for: .normal);
-                btnPhoto.isEnabled = false;
+                btnPhoto.isHidden = true;
+                btnPhoto.tag = -1;
             }
 
         }
@@ -258,12 +249,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             checkbox.tag = indexPath.row;
             // photo button
             if currentList.itemsInTheCart[indexPath.row].itemImage != nil {
-                btnPhoto.setImage(#imageLiteral(resourceName: "ic_photo"), for: .normal);
-                btnPhoto.isEnabled = true;
+                btnPhoto.isHidden = false;
+                // tag displays table as a matix:
+                btnPhoto.tag = indexPath.row * 2 + indexPath.section;
             }
             else{
-                btnPhoto.setImage(nil, for: .normal);
-                btnPhoto.isEnabled = false;
+                btnPhoto.isHidden = true;
+                btnPhoto.tag = -1;
             }
             }
 
@@ -303,8 +295,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
         let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: 150, height: 30));
         headerTitle.text = section == 1 ? "Items in the cart: " : "";
-        //headerTitle.backgroundColor = UIColor.blue;
-        //headerTitle.textColor = UIColor.blue;
         headerTitle.font = UIFont.boldSystemFont(ofSize: 16);
         viewContainer.addSubview(headerTitle);
         return viewContainer;
@@ -440,10 +430,10 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                 editSelectedItem(selectedRow: theRow);
                 break;
             case 1:
-                addPhotoToSelectedItem(selectedRow: theRow);
+                
                 break;
             case 2:
-                addPhotoToSelectedItem(selectedRow: theRow);
+                
                 break;
             case 3:
                 deleteSelectedItem(selectedRow: theRow);
@@ -465,21 +455,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
        
     }
     
-    
-    
-    func addPhotoToSelectedItem(selectedRow: IndexPath){
-        imagePickerHelper.delegate = self;
-        imagePickerHelper.pickPhoto(shouldTakeNewPhoto: true);
-    }
-    
-    func pickPhotoFromPhotoLibrary(selectedRow: IndexPath){
-        imagePickerHelper.delegate = self;
-        imagePickerHelper.pickPhoto(shouldTakeNewPhoto: false);
-    }
-    
-    func photoWasPicked(image: UIImage) {
-        imagePickerHelper.delegate = nil;
-    }
     
     func deleteSelectedItem(selectedRow: IndexPath){
         
@@ -533,9 +508,23 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         enterItemName.becomeFirstResponder();
         hideMenuIfItIsShown();
     }
-    
+    // MARK: presenting displayImageViewController.
     func btnPhotoClicked(_ sender: UIButton){
+        hideMenuIfItIsShown();
+        //in order to release memory from rare used viewController, displayImageViewController is created every time it is needed and afterwards is set to nil;
+        displayImageViewController = DisplayImageViewController();
+        let tag = sender.tag;
         
+        if tag != -1 {
+            let section: Int = tag % 2;
+            let row: Int = tag/2;
+        
+            if let image = section == 0 ? currentList.itemList[row].itemImage : currentList.itemsInTheCart[row].itemImage {
+            
+                displayImageViewController.itemImage = image;
+                present(displayImageViewController, animated: true, completion: nil);
+            }
+        }
     }
 
     

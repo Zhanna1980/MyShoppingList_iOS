@@ -36,7 +36,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         lblTitle = UILabel(frame: CGRect(x: margin, y: 40, width: view.frame.width - 2*margin, height: 50));
         lblTitle.textAlignment = .center;
         lblTitle.text = "My lists:";
-        lblTitle.alpha = 0.8;
+        lblTitle.tag = OptionsMenu.viewToBeHiddenTag;
+        lblTitle.font = UIFont.systemFont(ofSize: 18);
         view.addSubview(lblTitle);
         
         optionsMenu = OptionsMenu(view: view, options: [
@@ -47,7 +48,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         enterListName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50));
         enterListName.borderStyle = .roundedRect;
-        //enterListName.backgroundColor = UIColor.lightGray;
         enterListName.layer.cornerRadius = 9;
         enterListName.layer.borderWidth = 3;
         enterListName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;

@@ -14,6 +14,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     var editItemName: UITextField!;
     var lblQuantity: UILabel!;
     var enterQuantity: UITextField!;
+    var unitsView: UIView!;
     var enterUnits: UITextField!;
     var btnOpenUnitsDropDown: UIButton!;
     var tblUnitsDropDown: UITableView!;
@@ -37,7 +38,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     var shouldRefillData: Bool = false;
     
     override func viewDidLoad() {
-        view.backgroundColor = UIColor.green;
+        view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
         btnCancel = UIButton(type: .system);
         btnCancel.frame = CGRect(x: margin, y: 30, width: 70, height: 30);
@@ -55,7 +56,12 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         
         editItemName = UITextField(frame: CGRect(x: margin, y: btnCancel.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50));
         editItemName.borderStyle = .roundedRect;
-        editItemName.backgroundColor = UIColor.lightGray;
+        editItemName.backgroundColor = UIColor.white;
+        editItemName.alpha = 0.8;
+        editItemName.layer.cornerRadius = 9;
+        editItemName.layer.borderWidth = 3;
+        editItemName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        editItemName.layer.masksToBounds = true;
         editItemName.delegate = self;
         editItemName.becomeFirstResponder();
         view.addSubview(editItemName);
@@ -65,25 +71,42 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         view.addSubview(lblQuantity);
         
         enterQuantity = UITextField(frame: CGRect(x: lblQuantity.frame.maxX + margin, y: lblQuantity.frame.origin.y, width: 50, height: 30));
-        //enterQuantity.borderStyle = .roundedRect;
-        enterQuantity.backgroundColor = UIColor.lightGray;
+        enterQuantity.borderStyle = .roundedRect;
+        enterQuantity.layer.masksToBounds = true;
+        enterQuantity.layer.borderWidth = 3;
+        enterQuantity.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        enterQuantity.layer.cornerRadius = 9;
+        enterQuantity.backgroundColor = UIColor.white;
+        enterQuantity.alpha = 0.8;
         enterQuantity.delegate = self;
         enterQuantity.keyboardType = .numbersAndPunctuation;
         view.addSubview(enterQuantity);
         
-        enterUnits = UITextField(frame: CGRect(x: enterQuantity.frame.maxX + 20, y: enterQuantity.frame.origin.y, width: 100, height: 30));
-        //enterUnits.borderStyle = .roundedRect;
-        enterUnits.backgroundColor = UIColor.lightGray;
+        unitsView = UIView(frame: CGRect(x: enterQuantity.frame.maxX + 20, y: enterQuantity.frame.origin.y, width: 130, height: 30));
+        unitsView.layer.cornerRadius = 9;
+        unitsView.layer.borderWidth = 3;
+        unitsView.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        unitsView.backgroundColor = UIColor.clear;
+        unitsView.layer.masksToBounds = true;
+        view.addSubview(unitsView);
+
+        enterUnits = UITextField(frame: CGRect(x: 0, y: 0, width: 100, height: 30));
+        enterUnits.borderStyle = .roundedRect;
+        enterUnits.backgroundColor = UIColor.white;
+        enterUnits.alpha = 0.8;
         enterUnits.delegate = self;
-        enterUnits.placeholder = "units"
-        view.addSubview(enterUnits);
+        enterUnits.placeholder = "units";
+        unitsView.addSubview(enterUnits);
         
         btnOpenUnitsDropDown = UIButton(type: .custom);
         btnOpenUnitsDropDown.frame = CGRect(x: enterUnits.frame.maxX, y: enterUnits.frame.origin.y, width: 30, height: 30);
         btnOpenUnitsDropDown.setImage(#imageLiteral(resourceName: "ic_arrow_drop_down"), for: .normal);
-        btnOpenUnitsDropDown.backgroundColor = UIColor.lightGray;
+        btnOpenUnitsDropDown.backgroundColor = UIColor.white;
+        btnOpenUnitsDropDown.alpha = 0.8;
+        unitsView.layer.borderWidth = 3;
+        unitsView.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         btnOpenUnitsDropDown.addTarget(self, action: #selector(EditItemViewController.openUnitsDropDown(_:)), for: .touchUpInside);
-        view.addSubview(btnOpenUnitsDropDown);
+        unitsView.addSubview(btnOpenUnitsDropDown);
         
         
         lblCategory = UILabel(frame: CGRect(x: margin, y: lblQuantity.frame.maxY + 20, width: 100, height: 30));
@@ -91,7 +114,13 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         view.addSubview(lblCategory);
         
         enterCategory = UITextField(frame: CGRect(x: lblCategory.frame.maxX + margin, y: lblCategory.frame.origin.y, width: view.frame.width - lblCategory.frame.maxX - 3*margin, height: 30));
-        enterCategory.backgroundColor = UIColor.lightGray;
+        enterCategory.borderStyle = .roundedRect;
+        enterCategory.layer.borderWidth = 3;
+        enterCategory.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        enterCategory.backgroundColor = UIColor.white;
+        enterCategory.layer.masksToBounds = true;
+        enterCategory.layer.cornerRadius = 9;
+        enterCategory.alpha = 0.8;
         enterCategory.delegate = self;
         view.addSubview(enterCategory);
         
@@ -100,6 +129,10 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         view.addSubview(lblNotes);
         
         notes = UITextView(frame: CGRect(x: margin, y: lblNotes.frame.maxY + margin/2, width: view.frame.width - 2*margin, height: 60));
+        notes.layer.borderWidth = 3;
+        notes.layer.cornerRadius = 9;
+        notes.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        notes.alpha = 0.8;
         view.addSubview(notes);
         
         btnTakePhoto = UIButton(type: .custom);
@@ -111,6 +144,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnTakePhoto.layer.cornerRadius = 9;
         btnTakePhoto.layer.borderWidth = 3;
         btnTakePhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnTakePhoto.alpha = 0.8;
         view.addSubview(btnTakePhoto);
         
         btnPickPhoto = UIButton(type: .custom);
@@ -122,6 +156,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnPickPhoto.layer.cornerRadius = 9;
         btnPickPhoto.layer.borderWidth = 3;
         btnPickPhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnPickPhoto.alpha = 0.8;
         view.addSubview(btnPickPhoto);
         
         btnDeletePhoto = UIButton(type: .custom);
@@ -133,15 +168,22 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnDeletePhoto.layer.cornerRadius = 9;
         btnDeletePhoto.layer.borderWidth = 3;
         btnDeletePhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnDeletePhoto.alpha = 0.8;
         view.addSubview(btnDeletePhoto);
         
         itemPhoto = UIImageView(frame: CGRect(x: btnTakePhoto.frame.maxX + margin, y: btnTakePhoto.frame.origin.y, width: view.frame.width - btnTakePhoto.frame.maxX - 3*margin, height: view.frame.height - btnTakePhoto.frame.origin.y - margin));
         itemPhoto.contentMode = .scaleAspectFit;
+        itemPhoto.backgroundColor = UIColor.white;
+        itemPhoto.layer.cornerRadius = 9;
+        itemPhoto.layer.borderWidth = 3;
+        itemPhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        itemPhoto.alpha = 0.8;
         view.addSubview(itemPhoto);
         
-        tblUnitsDropDown = UITableView(frame: CGRect(x: enterUnits.frame.origin.x, y: enterUnits.frame.maxY, width: enterUnits.frame.width + btnOpenUnitsDropDown.frame.width, height: 0), style: .plain);
+        tblUnitsDropDown = UITableView(frame: CGRect(x: unitsView.frame.origin.x + 3, y: unitsView.frame.maxY, width: enterUnits.frame.width + btnOpenUnitsDropDown.frame.width - 6, height: 0), style: .plain);
         tblUnitsDropDown.dataSource = self;
         tblUnitsDropDown.delegate = self;
+        tblUnitsDropDown.alpha = 0.8;
         view.addSubview(tblUnitsDropDown);
         
         fillDataInViewController();
@@ -184,7 +226,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         }
         else{
             itemPhoto.image = nil;
-            itemPhoto.backgroundColor = UIColor.lightGray;
+            itemPhoto.backgroundColor = UIColor.white;
         }
 
         tblSuggestionsIsShown = false;
@@ -380,7 +422,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     
     func showSuggestions(){
         UIView.animate(withDuration: 0.1, animations: {() -> Void in
-            self.tblUnitsDropDown.frame = CGRect(x: self.enterUnits.frame.origin.x, y: self.enterUnits.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width, height: 180) ;
+            self.tblUnitsDropDown.frame = CGRect(x: self.unitsView.frame.origin.x + 5, y: self.unitsView.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width - 10, height: 180) ;
             }, completion: { finished in
               self.tblSuggestionsIsShown = true;
               self.btnOpenUnitsDropDown.setImage(#imageLiteral(resourceName: "ic_arrow_drop_up"), for: .normal);
@@ -389,7 +431,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     
     func hideSuggestions(){
         UIView.animate(withDuration: 0.1, animations: {() -> Void in
-            self.tblUnitsDropDown.frame = CGRect(x: self.enterUnits.frame.origin.x, y: self.enterUnits.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width, height: 0) ;
+            self.tblUnitsDropDown.frame = CGRect(x: self.unitsView.frame.origin.x + 5, y: self.unitsView.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width - 10, height: 0) ;
             }, completion: { finished in
                 self.tblSuggestionsIsShown = false;
                 self.btnOpenUnitsDropDown.setImage(#imageLiteral(resourceName: "ic_arrow_drop_down"), for: .normal);
