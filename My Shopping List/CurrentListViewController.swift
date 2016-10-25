@@ -284,13 +284,12 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: Header of the section "Items in the cart"
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
-        return (section == 0 ? 0 : 50);
+        return (section == 0 ? 0.1 : 50);
     }
     
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewContainer = UIView();
-        viewContainer.sizeToFit();
         viewContainer.layer.borderWidth = 3;
         viewContainer.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         

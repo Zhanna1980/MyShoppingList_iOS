@@ -51,6 +51,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         enterListName.layer.cornerRadius = 9;
         enterListName.layer.borderWidth = 3;
         enterListName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        enterListName.layer.masksToBounds = true;
         enterListName.placeholder = "Add a new list";
         enterListName.delegate = self;
         enterListName.alpha = 0.8;
