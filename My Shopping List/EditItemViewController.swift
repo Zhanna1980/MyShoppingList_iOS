@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+// ViewController for editing specific item
 class EditItemViewController: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, PhotoWasPickedDelegate{
     
     var editItemName: UITextField!;
@@ -185,7 +186,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         tblUnitsDropDown.delegate = self;
         tblUnitsDropDown.alpha = 0.8;
         view.addSubview(tblUnitsDropDown);
-        
+        //initial filling of the fields
         fillDataInViewController();
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (EditItemViewController.handlingTaps(_:)));
@@ -193,7 +194,6 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         view.addGestureRecognizer(tapGestureRecognizer);
         
         imagePickerHelper = ImagePickerHelper(viewController: self);
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -201,7 +201,6 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
             fillDataInViewController();
         }
     }
-    
     
     //MARK: - Fills data according to the edited item
     func fillDataInViewController(){
@@ -235,6 +234,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         shouldRefillData = false;
     }
     
+    // hiding keyboard and suggestions dropdown
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder();
         if textField == enterUnits && tblSuggestionsIsShown{
@@ -244,6 +244,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         return true;
     }
     
+    //processing user's input for showing suggestions:
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField === enterUnits{
             if let text = textField.text{
@@ -258,18 +259,14 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
                 }
                 else
                 {
-                    
                     if tblSuggestionsIsShown{
                         hideSuggestions();
                         shouldShowSortedSuggestions = false;
                     }
                     tblUnitsDropDown.reloadData();
                 }
-                
-                
             }
         }
-        
         return true;
     }
     
@@ -282,24 +279,28 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         }
         
     }
-    //MARK: Editing the photo:
     
+    //MARK: Editing the photo:
+    // a new photo
     func btnTakePhotoClicked(_ sender: UIButton){
         imagePickerHelper.delegate = self;
         imagePickerHelper.pickPhoto(shouldTakeNewPhoto: true);
     }
     
+    // picking a photo from Photo Library:
     func btnPickPhotoClicked(_ sender: UIButton){
         imagePickerHelper.delegate = self;
         imagePickerHelper.pickPhoto(shouldTakeNewPhoto: false);
     }
     
+    //User selected photo
     func photoWasPicked(image: UIImage) {
         
         itemPhoto.image = image;
         imagePickerHelper.delegate = nil;
     }
     
+    // deleting the photo
     func btnDeletePhotoClicked(_ sender: UIButton){
         if editedItem.itemImage != nil{
             editedItem.itemImage = nil;
@@ -308,9 +309,8 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         }
     }
     
-
-    //MARK: Leaving editViewController:
-    
+    //MARK: Leaving editViewController
+    // cancel changes and return to the shopping list
     func btnCancelClicked(_ sender: UIButton){
         if tblSuggestionsIsShown{
             shouldShowSortedSuggestions = false;
@@ -320,6 +320,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         dismiss(animated: true, completion: nil);
     }
     
+    // save changes and return to the shopping list
     func btnDoneClicked (_ sender: UIButton){
         if editItemName.hasText{
             editedItem.name = editItemName.text!;
@@ -367,17 +368,15 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         dismiss(animated: true, completion: nil);
     }
     
-    //MARK: -Shows alertController
+    //MARK: Show alertController
     func showAlertController(message: String){
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert);
         let actionOK = UIAlertAction(title: "Ok", style: .default, handler: nil);
         alertController.addAction(actionOK);
         present(alertController, animated: true, completion: nil);
     }
-
     
     //MARK: - Defining a table of unit sugesstions
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
     }
@@ -416,10 +415,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         hideSuggestions();
     }
     
-    
-    
     // MARK: showing and hiding dropdown of units suggestions
-    
     func showSuggestions(){
         UIView.animate(withDuration: 0.1, animations: {() -> Void in
             self.tblUnitsDropDown.frame = CGRect(x: self.unitsView.frame.origin.x + 5, y: self.unitsView.frame.maxY, width: self.enterUnits.frame.width + self.btnOpenUnitsDropDown.frame.width - 10, height: 180) ;
@@ -438,6 +434,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         });
     }
     
+    //preparing the list of suggestions:
     func sortSuggestions(key: String){
         sortedSuggestions.removeAll();
         for var i in 0..<CurrentState.instance.units.count{
@@ -448,19 +445,12 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         shouldShowSortedSuggestions = sortedSuggestions.count > 0
     }
     
+    // hiding keyboard
     func handlingTaps (_ sender: UITapGestureRecognizer){
         editItemName.resignFirstResponder();
         enterQuantity.resignFirstResponder();
         enterUnits.resignFirstResponder();
         enterCategory.resignFirstResponder();
         notes.resignFirstResponder();
-
-        
     }
-    
-    
-    
-    
-    
-    
 }

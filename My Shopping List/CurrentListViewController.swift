@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+//Presents the specific shopping list
 class CurrentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CheckboxWasCheckedDelegate, OptionWasSelectedDelegate, UITextFieldDelegate {
     
     var lblTitle: UILabel!;
@@ -104,7 +105,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             tblItemsInList.reloadData();
         }
         shouldReloadData = false;
-        //
+        
+        //setting displayImageViewController to nil in order to release memory from rarely used viewController:
         displayImageViewController = nil;
     }
     
@@ -112,11 +114,12 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         shouldReloadData = true;
     }
     
+    // back to the list of shopping lists
     func btnBackClicked(_ sender: UIButton){
         dismiss(animated: true, completion: nil);
     }
-    // MARK: - Adding an item to list;
     
+    // MARK: - Adding an item to list
     func btnAddItemClicked(_ sender: UIButton){
         processTextFieldData();
     }
@@ -137,16 +140,15 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
     func addToListItem (itemName: String){
         var isAlreadyInTheList: Bool = false;
-        for var i in 0..<currentList.itemList.count{
+        for i in 0..<currentList.itemList.count{
             if currentList.itemList[i].name == itemName{
                 isAlreadyInTheList = true;
                 break;
             }
         }
         if !isAlreadyInTheList{
-            var newItem = Item(name: itemName);
+            let newItem = Item(name: itemName);
             currentList.itemList.insert(newItem, at: 0);
-            CurrentState.instance.usedItems.append(itemName);
             CurrentState.instance.saveData();
             tblItemsInList.reloadSections([0], with: .automatic);
         }
@@ -156,7 +158,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     // MARK: - function that shows alert while adding an item that already exists
-    
     func showAlertController(){
         let alertController = UIAlertController(title: nil, message: "There is such item in the list", preferredStyle: .alert);
         let actionOK = UIAlertAction(title: "Ok", style: .default, handler: nil);
@@ -164,8 +165,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         present(alertController, animated: true, completion: nil);
     }
     
-    // MARK: - Defining a tableView;
-    
+    // MARK: - Defining a tableView
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2;
     }
@@ -179,14 +179,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    // defining a cell:
+    // defining a cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "identifier");
         
         if cell == nil{
             cell = UITableViewCell(style: .value1, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
-            //cell!.contentView.backgroundColor = UIColor.yellow;
             
             let checkbox = Checkbox(position: CGPoint(x: 5, y: 0));
             checkbox.center.y = cell!.contentView.center.y;
@@ -281,7 +280,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             tblItemsInList.reloadSections([indexPath.section], with: .automatic);
         }
     }
-    // MARK: Header
+    
+    // MARK: Header of the section "Items in the cart"
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         return (section == 0 ? 0 : 50);
@@ -304,7 +304,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     //MARK: footer and its functions
-    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 50;
     }
@@ -423,7 +422,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     //MARK: - Option from menu was selected:
-    
     func optionWasSelected (optionIndex: Int){
         if let theRow = selectedRow{
             switch optionIndex {
@@ -446,6 +444,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         hideMenuIfItIsShown();
     }
     
+    // move to editItemViewController when selected edit item option
     func editSelectedItem(selectedRow: IndexPath){
         
         if editItemViewController == nil{
@@ -456,42 +455,44 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
        
     }
     
+    //copy or move selected item to other list
     func copyOrMoveSelectedItemToOtherList(selectedRow: IndexPath, shouldCopyItem: Bool){
-        //var listWithItem = selectedRow.section == 0 ? currentList.itemList : currentList.itemsInTheCart;
+        if CurrentState.instance.listsList.count <= 1{
+            return;
+        }
         let item: Item = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
         let title = item.name;
         let message = shouldCopyItem ? "Copy to the list:" : "Move to the list:";
-        
-        if CurrentState.instance.listsList.count > 1{
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet);
-            
-            for var i in 0..<CurrentState.instance.listsList.count{
-                if CurrentState.instance.listsList[i].name != currentList.name {
-                    let action = UIAlertAction(title: CurrentState.instance.listsList[i].name, style: .default) { (action: UIAlertAction) in
+        //actionSheet with the possible lists to copy or to move the item to
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet);
+        for i in 0..<CurrentState.instance.listsList.count{
+            if CurrentState.instance.listsList[i].name == currentList.name {
+                continue;
+            }
+            else{
+                let action = UIAlertAction(title: CurrentState.instance.listsList[i].name, style: .default) { (action: UIAlertAction) in
                         CurrentState.instance.listsList[i].itemList.append(item);
                         if !shouldCopyItem{
                             if selectedRow.section == 0{
-                                CurrentState.instance.listsList[i].itemList.remove(at: selectedRow.row);
+                                self.currentList.itemList.remove(at: selectedRow.row);
                             }
                             else{
-                                CurrentState.instance.listsList[i].itemsInTheCart.remove(at: selectedRow.row);
+                                self.currentList.itemsInTheCart.remove(at: selectedRow.row);
                             }
                         }
                         CurrentState.instance.saveData();
                         self.tblItemsInList.reloadSections([selectedRow.section], with: .automatic);
-                    }
-                    alertController.addAction(action);
                 }
+                alertController.addAction(action);
             }
-            let actionCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
-            alertController.addAction(actionCancel);
-            present(alertController, animated: true, completion: nil);
         }
+        let actionCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
+        alertController.addAction(actionCancel);
+        present(alertController, animated: true, completion: nil);
     }
     
-    
+    // delete item when "delete" option was selected
     func deleteSelectedItem(selectedRow: IndexPath){
-        
         if selectedRow.section == 0{
             currentList.itemList.remove(at: selectedRow.row);
         }
@@ -504,11 +505,9 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
-    
     //MARK: Showing and hiding optionsMenu
     
-    // hiding menu if it is shown 
-    
+    // hiding menu if it is shown
     func hideMenuIfItIsShown(){
         if isMenuShown {
             optionsMenu.hide();
@@ -517,6 +516,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    //hiding options menu and keyboard
     func handlingTaps(_ sender: UITapGestureRecognizer){
         hideMenuIfItIsShown();
         if enterItemName.isFirstResponder {
@@ -524,8 +524,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    // showing menu on longPress:
-    
+    // showing menu on longPress
     func handlingLongPressOnRow(_ sender: UILongPressGestureRecognizer){
         let row = (sender.view as! UITableViewCell).contentView.subviews[0].tag;
         let section = ((sender.view as! UITableViewCell).contentView.subviews[0] as! Checkbox).isChecked ? 1 : 0;
@@ -542,6 +541,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         enterItemName.becomeFirstResponder();
         hideMenuIfItIsShown();
     }
+    
     // MARK: presenting displayImageViewController.
     func btnPhotoClicked(_ sender: UIButton){
         hideMenuIfItIsShown();
@@ -560,8 +560,4 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
     }
-
-    
-    
-
 }

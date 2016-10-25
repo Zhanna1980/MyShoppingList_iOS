@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 
+// protocol for performing chosen action from options menu
 protocol OptionWasSelectedDelegate {
     func optionWasSelected (optionIndex: Int);
 }
 
+// Options menu and its properties
 class OptionsMenu: UIView{
     static let viewToBeHiddenTag: Int = 65453;
     fileprivate var _superview: UIView;
@@ -21,7 +23,6 @@ class OptionsMenu: UIView{
     var max: CGFloat = 5;
     var options: [UIView];
     var optionWasSelectedDelegate: OptionWasSelectedDelegate?;
-    
     
     init(view: UIView, options: [Option]){
         self._superview = view;
@@ -41,14 +42,11 @@ class OptionsMenu: UIView{
         fatalError("init(coder:) has not been implemented")
     }
     
+    // Add an option with specified text and image
     fileprivate func addOption(icon: UIImage, label: String){
-        
-        
         let container = UIView(frame: CGRect(x: max, y: self.frame.origin.y + 30, width: _optionWidth, height: self.frame.height - 30));
-        //container.backgroundColor = UIColor(colorLiteralRed: 142/255, green: 193/255, blue: 99/255, alpha: 1);
         container.layer.cornerRadius = 9;
         container.layer.borderWidth = 3;
-        //container.layer.borderColor = UIColor(colorLiteralRed: 0.5, green: 0.8, blue: 0.2, alpha: 1).cgColor;
         container.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         self.addSubview(container);
         
@@ -75,13 +73,13 @@ class OptionsMenu: UIView{
         max = max + _optionWidth + margin;
     }
     
+    // functions for using by viewControllers
     func hide(){
         UIView.animate(withDuration: 0.3, animations: {() -> Void in
             self.alpha = 0 ;
             }, completion: nil);
         
         _superview.viewWithTag(OptionsMenu.viewToBeHiddenTag)?.alpha = 1;
-        
     }
     
     func show(){
@@ -90,9 +88,9 @@ class OptionsMenu: UIView{
             }, completion: nil);
         
         _superview.viewWithTag(OptionsMenu.viewToBeHiddenTag)?.alpha = 0;
-        
     }
     
+    // user chose an option:
     func optionSelected(_ sender: UITapGestureRecognizer){
         let optionIndex: Int = (sender.view?.tag)!;
         if let theDelegate = optionWasSelectedDelegate{
@@ -103,6 +101,7 @@ class OptionsMenu: UIView{
     
 }
 
+// Option item class
 class Option{
     let optionName:String;
     let optionIcon: UIImage;

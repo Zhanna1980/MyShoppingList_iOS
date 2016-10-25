@@ -9,15 +9,14 @@
 import Foundation
 import UIKit
 
+// Display item image with zoom and pan capabilities
 class DisplayImageViewController: UIViewController, UIScrollViewDelegate{
     
     var itemImageView: UIImageView!;
     var scrollView: UIScrollView!;
     var itemImage: UIImage!;
     
-    
     override func viewDidLoad() {
-        
         itemImageView = UIImageView(image: itemImage);
         
         scrollView = UIScrollView(frame: view.bounds);
@@ -35,16 +34,13 @@ class DisplayImageViewController: UIViewController, UIScrollViewDelegate{
         scrollView.indicatorStyle = .white;
         
         setZoomScale();
-        
-        
-        
-        
+        // taps for returning to the shopping list
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (DisplayImageViewController.handlingTaps(_:)));
         view.addGestureRecognizer(tapGestureRecognizer);
         
     }
     
-    
+    //returning to the shopping list
     func handlingTaps(_ sender: UITapGestureRecognizer){
         dismiss(animated: true, completion: nil);
     }
@@ -52,9 +48,8 @@ class DisplayImageViewController: UIViewController, UIScrollViewDelegate{
     func viewForZooming(in: UIScrollView)-> UIView?{
         return itemImageView;
     }
-    
+    //set scale for image to fit the screen
     func setZoomScale() {
-        
         let imageViewSize = itemImageView.bounds.size
         let scrollViewSize = scrollView.bounds.size
         let widthScale = scrollViewSize.width / imageViewSize.width
@@ -62,16 +57,16 @@ class DisplayImageViewController: UIViewController, UIScrollViewDelegate{
         
         scrollView.minimumZoomScale = min(widthScale, heightScale);
 
-
         scrollView.zoomScale = min(widthScale, heightScale);
-        
-        
-        
+       
     }
+    
+    //handling rotation
     override func viewWillLayoutSubviews() {
         setZoomScale();
     }
-    //MARK: - placing the image in the center of the screen:
+    
+    //MARK: placing the image in the center of the screen
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         
         let imageViewSize = itemImageView.frame.size
@@ -82,7 +77,4 @@ class DisplayImageViewController: UIViewController, UIScrollViewDelegate{
         
         scrollView.contentInset = UIEdgeInsets(top: verticalPadding, left: horizontalPadding, bottom: verticalPadding, right: horizontalPadding)
     }
-
-    
-    
 }

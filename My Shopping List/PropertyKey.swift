@@ -7,7 +7,8 @@
 //
 
 import Foundation
-// keys for encoding to prevent mistakes in strings
+
+// keys for encoding program data into the file to prevent typos in strings
 struct PropertyKey {
     // for Item class:
     static let nameKey = "name";
@@ -25,7 +26,6 @@ struct PropertyKey {
     static let itemsInTheCartKey = "itemsInTheCart";
     static let dateKey = "date";
     // for CurrentState Class:
-    static let usedItemsKey = "usedItems";
     static let listsListKey = "listsList";
     static let unitsArrayKey = "units";
 }

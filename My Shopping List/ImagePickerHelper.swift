@@ -10,10 +10,12 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
+// protocol for actions with chosen photo
 protocol PhotoWasPickedDelegate{
    func photoWasPicked(image: UIImage);
 }
 
+// ImagePickerHelper. Helper methods to pick an image from camera or photo library
 class ImagePickerHelper: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
     var viewController: UIViewController;
@@ -26,7 +28,7 @@ class ImagePickerHelper: NSObject, UIImagePickerControllerDelegate, UINavigation
 
     }
     
-    // the function choose the appropriate source type according to the given parameter
+    // choose the appropriate source type according to the given parameter
     func pickPhoto(shouldTakeNewPhoto: Bool){
         let sourceType = shouldTakeNewPhoto ? UIImagePickerControllerSourceType.camera : UIImagePickerControllerSourceType.photoLibrary;
         
@@ -48,7 +50,6 @@ class ImagePickerHelper: NSObject, UIImagePickerControllerDelegate, UINavigation
         
     }
     
-        
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.delegate = nil;
         picker.dismiss(animated: true, completion: nil);

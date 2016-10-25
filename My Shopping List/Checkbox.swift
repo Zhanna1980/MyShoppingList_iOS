@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 
+// protocol for handling checking event
 protocol CheckboxWasCheckedDelegate {
     func checkboxWasChecked(checkbox: Checkbox);
 }
 
+// Checkbox and its properties and behaviour
 class Checkbox: UIImageView{
     
     fileprivate static let checkedImage: UIImage = #imageLiteral(resourceName: "checkbox-checked");
@@ -22,7 +24,6 @@ class Checkbox: UIImageView{
     var delegate: CheckboxWasCheckedDelegate?;
     
     init(position: CGPoint) {
-        
         self._position = position;
         super.init(frame: CGRect(x: position.x, y: position.y, width: 20, height: 20));
         self.image = Checkbox.uncheckedImage;
@@ -37,7 +38,6 @@ class Checkbox: UIImageView{
     required init?(coder aDecoder: NSCoder) {
         self._position = CGPoint(x:0, y:0);
         super.init(coder: aDecoder);
-        //fatalError("init(coder:) has not been implemented")
     }
     
     var isChecked: Bool {
@@ -58,7 +58,6 @@ class Checkbox: UIImageView{
     }
     
     func checkboxChecked(_ sender: UITapGestureRecognizer){
-
         let frameOriginal: CGRect = self.frame;
         UIView.animate(withDuration: 0.1, animations: {() -> Void in
             self.frame = CGRect(x:self.frame.midX,y:self.frame.midY, width:0,height: 0 );
@@ -80,8 +79,6 @@ class Checkbox: UIImageView{
                             theDelegate.checkboxWasChecked(checkbox: self);
                         }
                     });
-    
-        
         });
     
     }

@@ -8,11 +8,10 @@
 
 import Foundation
 
+//Class to represent item units and quantities
 class ItemCalculations: NSObject, NSCoding {
     
     // MARK: Properties
-    
-    
     fileprivate var _unit: String;
     fileprivate var _quantity: Float;
     
@@ -68,7 +67,6 @@ class ItemCalculations: NSObject, NSCoding {
     }
     
     // MARK: NSCoding
-    
     func encode(with aCoder: NSCoder) {
         aCoder.encode(_unit, forKey: PropertyKey.unitKey);
         aCoder.encode(_quantity, forKey: PropertyKey.quantityKey);

@@ -24,23 +24,5 @@
             </objects>
             <point key="canvasLocation" x="-666" y="-165"/>
         </scene>
-        <!--Current List View Controller-->
-        <scene sceneID="vwa-zw-M0h">
-            <objects>
-                <viewController id="IWK-Sh-UbX" customClass="CurrentListViewController" customModule="My_Shopping_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="sON-JN-FJ7"/>
-                        <viewControllerLayoutGuide type="bottom" id="9Cs-G0-K95"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="AIH-Lq-f1w">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CZd-MY-cOR" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="234" y="-165"/>
-        </scene>
     </scenes>
 </document>

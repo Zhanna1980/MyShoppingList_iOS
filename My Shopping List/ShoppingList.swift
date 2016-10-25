@@ -8,9 +8,8 @@
 
 import Foundation
 
+// Shoping list class. Represents shopping list with its properties (like name,date) and its items.
 class ShoppingList: NSObject, NSCoding {
-    
-    
     
     // MARK: Properties:
     var itemList: [Item];
@@ -57,14 +56,14 @@ class ShoppingList: NSObject, NSCoding {
     
     func describeShoppingList() -> String{
         var description: String = _name + ": ";
-        for var i in 0..<itemList.count{
+        for i in 0..<itemList.count{
             let ending = i < itemList.count - 1 ? ", " : ".";
             description = description + itemList[i].describeItem() + ending;
         }
         return description;
     }
-    // MARK: NSCoding
     
+    // MARK: NSCoding
     func encode(with aCoder: NSCoder) {
         aCoder.encode(_name, forKey: PropertyKey.nameKey);
         aCoder.encode(_date, forKey: PropertyKey.dateKey);

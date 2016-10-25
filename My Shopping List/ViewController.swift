@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+// Represents the list of shopping lists
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, OptionWasSelectedDelegate {
     
     var lblTitle: UILabel!;
@@ -152,10 +152,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         let date = Date();
         let stringDate = dateFormatter.string(from: date);
-        var newList = ShoppingList(name: enteredListName, date: stringDate);
+        let newList = ShoppingList(name: enteredListName, date: stringDate);
         CurrentState.instance.listsList.insert(newList, at: 0);
         tblLists.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic);
-        // I need to reload table in order to keep cell tag up-to-date
+        // The table is needed to be reloaded in order to keep cell tag up-to-date
         tblLists.reloadSections([0], with: .automatic);
         CurrentState.instance.saveData();
 
@@ -171,7 +171,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     //MARK: - Option from menu was selected:
-    
     func optionWasSelected (optionIndex: Int){
         if let theRow = selectedRow{
             switch optionIndex {
@@ -190,7 +189,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         hideMenuIfItIsShown();
     }
-    //shows alertController for editing the list name:
+    
+    //shows alertController for editing the list name
     func editSelectedList(selectedRow: Int){
         
         editAlertController = UIAlertController(title: "Edit your list name:", message: nil, preferredStyle: .alert);
@@ -209,7 +209,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         present(editAlertController, animated: true, completion: nil);
     }
-    // option of sharing list of items as one string
+    
+    // handles option "share" - sharing list of items as one string
     func shareSelectedList(selectedRow: Int){
         let contentToShare: String = CurrentState.instance.listsList[selectedRow].describeShoppingList();
         let objectsToShare = [contentToShare] as [Any];
@@ -222,19 +223,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
        
         
     }
-    // option "delete selected list"
+    
+    // handles option "delete selected list"
     func deleteSelectedList(selectedRow: Int){
         CurrentState.instance.listsList.remove(at: selectedRow);
         tblLists.deleteRows(at: [IndexPath(row: selectedRow, section: 0)], with: .left);
         CurrentState.instance.saveData();
 
     }
-
     
     //MARK: Showing and hiding optionsMenu
     
     // hiding menu if it is shown
-    
     func hideMenuIfItIsShown(){
         if isMenuShown {
             optionsMenu.hide();
@@ -243,6 +243,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    // hiding options menu and keyboard
     func handlingTaps(_ sender: UITapGestureRecognizer){
         hideMenuIfItIsShown();
         if enterListName.isFirstResponder {
@@ -250,8 +251,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    // showing menu on longPress:
-    
+    // showing menu on longPress
     func handlingLongPressOnRow(_ sender: UILongPressGestureRecognizer){
         selectedRow = sender.view?.tag;
         tblLists.selectRow(at: IndexPath(row: selectedRow!, section: 0), animated: false, scrollPosition: .none);
@@ -262,6 +262,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    // restore the keyboard and hide options menu
     func textFieldDidBeginEditing(_ textField: UITextField) {
         enterListName.becomeFirstResponder();
         hideMenuIfItIsShown();
@@ -270,7 +271,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }
 
