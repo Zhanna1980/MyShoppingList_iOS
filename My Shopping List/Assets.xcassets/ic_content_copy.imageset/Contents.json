@@ -2,15 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Mix-of-green-vegetables.jpg",
+      "filename" : "ic_content_copy.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "ic_content_copy_2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "ic_content_copy_3x.png",
       "scale" : "3x"
     }
   ],

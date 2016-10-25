@@ -55,8 +55,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
         optionsMenu = OptionsMenu(view: view, options: [
                         Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
-                        Option(icon: #imageLiteral(resourceName: "ic_add_a_photo"), label: "Add a photo"),
-                        Option(icon: #imageLiteral(resourceName: "ic_photo"), label: "Pick a photo"),
+                        Option(icon: #imageLiteral(resourceName: "ic_forward"), label: "Move"),
+                        Option(icon: #imageLiteral(resourceName: "ic_content_copy"), label: "Copy"),
                         Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
@@ -66,6 +66,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         enterItemName.layer.cornerRadius = 9;
         enterItemName.layer.borderWidth = 3;
         enterItemName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        enterItemName.layer.masksToBounds = true;
         enterItemName.alpha = 0.8;
         enterItemName.delegate = self;
         view.addSubview(enterItemName);
@@ -430,10 +431,10 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                 editSelectedItem(selectedRow: theRow);
                 break;
             case 1:
-                
+                copyOrMoveSelectedItemToOtherList(selectedRow: theRow, shouldCopyItem: false);
                 break;
             case 2:
-                
+                copyOrMoveSelectedItemToOtherList(selectedRow: theRow, shouldCopyItem: true);
                 break;
             case 3:
                 deleteSelectedItem(selectedRow: theRow);
@@ -453,6 +454,39 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         editItemViewController.editedItem = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
         present(editItemViewController, animated: true, completion: nil);
        
+    }
+    
+    func copyOrMoveSelectedItemToOtherList(selectedRow: IndexPath, shouldCopyItem: Bool){
+        //var listWithItem = selectedRow.section == 0 ? currentList.itemList : currentList.itemsInTheCart;
+        let item: Item = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
+        let title = item.name;
+        let message = shouldCopyItem ? "Copy to the list:" : "Move to the list:";
+        
+        if CurrentState.instance.listsList.count > 1{
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet);
+            
+            for var i in 0..<CurrentState.instance.listsList.count{
+                if CurrentState.instance.listsList[i].name != currentList.name {
+                    let action = UIAlertAction(title: CurrentState.instance.listsList[i].name, style: .default) { (action: UIAlertAction) in
+                        CurrentState.instance.listsList[i].itemList.append(item);
+                        if !shouldCopyItem{
+                            if selectedRow.section == 0{
+                                CurrentState.instance.listsList[i].itemList.remove(at: selectedRow.row);
+                            }
+                            else{
+                                CurrentState.instance.listsList[i].itemsInTheCart.remove(at: selectedRow.row);
+                            }
+                        }
+                        CurrentState.instance.saveData();
+                        self.tblItemsInList.reloadSections([selectedRow.section], with: .automatic);
+                    }
+                    alertController.addAction(action);
+                }
+            }
+            let actionCancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
+            alertController.addAction(actionCancel);
+            present(alertController, animated: true, completion: nil);
+        }
     }
     
     
