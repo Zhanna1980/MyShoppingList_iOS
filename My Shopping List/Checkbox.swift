@@ -34,7 +34,6 @@ class Checkbox: UIImageView{
         
     }
     
-    
     required init?(coder aDecoder: NSCoder) {
         self._position = CGPoint(x:0, y:0);
         super.init(coder: aDecoder);

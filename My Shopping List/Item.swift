@@ -89,6 +89,7 @@ class Item: NSObject, NSCoding{
             _itemImage = newValue;
         }
     }
+    
     var category: String?{
         get{
             return _category;
@@ -107,6 +108,7 @@ class Item: NSObject, NSCoding{
         }
     }
     
+    //MARK: toString method
     func describeItem() -> String{
         return (self._name + " " + self._itemQuantityAndUnits.toString());
     }

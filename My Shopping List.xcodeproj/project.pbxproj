@@ -14,6 +14,7 @@
 		2B24D07E1DA2657200E1DBD6 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B24D07D1DA2657200E1DBD6 /* Checkbox.swift */; };
 		2B25EC991DB62EA5008C086C /* CurrentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B25EC981DB62EA5008C086C /* CurrentState.swift */; };
 		2B26F3AD1DAB64F700200A1E /* EditItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B26F3AC1DAB64F700200A1E /* EditItemViewController.swift */; };
+		2B2C8F091DC0B8BA00EEA0A1 /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B2C8F081DC0B8BA00EEA0A1 /* ViewBuilder.swift */; };
 		2B36B6DD1DBB4A31005A421B /* DisplayImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B36B6DC1DBB4A31005A421B /* DisplayImageViewController.swift */; };
 		2BD990C21D9123DE00C24899 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990C11D9123DE00C24899 /* AppDelegate.swift */; };
 		2BD990C41D9123DE00C24899 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990C31D9123DE00C24899 /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 		2B24D07D1DA2657200E1DBD6 /* Checkbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		2B25EC981DB62EA5008C086C /* CurrentState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentState.swift; sourceTree = "<group>"; };
 		2B26F3AC1DAB64F700200A1E /* EditItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditItemViewController.swift; sourceTree = "<group>"; };
+		2B2C8F081DC0B8BA00EEA0A1 /* ViewBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
 		2B36B6DC1DBB4A31005A421B /* DisplayImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayImageViewController.swift; sourceTree = "<group>"; };
 		2BD990BE1D9123DE00C24899 /* My Shopping List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Shopping List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BD990C11D9123DE00C24899 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				2B1C9E5E1DB26ACA00CF0A63 /* PropertyKey.swift */,
 				2B25EC981DB62EA5008C086C /* CurrentState.swift */,
 				2B36B6DC1DBB4A31005A421B /* DisplayImageViewController.swift */,
+				2B2C8F081DC0B8BA00EEA0A1 /* ViewBuilder.swift */,
 			);
 			path = "My Shopping List";
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 				2BD990C41D9123DE00C24899 /* ViewController.swift in Sources */,
 				2BD990D41D91247E00C24899 /* Item.swift in Sources */,
 				2BD990D61D91249A00C24899 /* ShoppingList.swift in Sources */,
+				2B2C8F091DC0B8BA00EEA0A1 /* ViewBuilder.swift in Sources */,
 				2B1D33331D93BC6F0066CB6A /* CurrentListViewController.swift in Sources */,
 				2B26F3AD1DAB64F700200A1E /* EditItemViewController.swift in Sources */,
 				2B211CB11DAF9AFC00F5F4C0 /* ImagePickerHelper.swift in Sources */,

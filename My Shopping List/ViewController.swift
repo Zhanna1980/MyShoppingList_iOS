@@ -44,12 +44,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         dateFormatter.dateFormat = "dd/MM/yy HH:mm"
         dateFormatter.locale = Locale.current;
         
-        lblTitle = UILabel(frame: CGRect(x: margin, y: 40, width: view.frame.width - 2*margin, height: 50));
+        let viewBuilder = ViewBuilder();
+        
+        lblTitle = viewBuilder.addLabel(frame: CGRect(x: margin, y: 40, width: view.frame.width - 2*margin, height: 50), text: "My lists:", addToView: view);
         lblTitle.textAlignment = .center;
-        lblTitle.text = "My lists:";
+        //lblTitle will be hidden when options menu is shown
         lblTitle.tag = OptionsMenu.viewToBeHiddenTag;
         lblTitle.font = UIFont.systemFont(ofSize: 18);
-        view.addSubview(lblTitle);
         
         optionsMenu = OptionsMenu(view: view, options: [
             Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
@@ -57,22 +58,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
-        enterListName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50));
-        enterListName.borderStyle = .roundedRect;
-        enterListName.setBorder();
+        enterListName = viewBuilder.addTextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50), addToView: view);
         enterListName.placeholder = "Add a new list";
         enterListName.delegate = self;
-        enterListName.alpha = 0.8;
-        view.addSubview(enterListName);
         
-        btnAddList = UIButton(type: .system);
-        btnAddList.setTitle("+", for: .normal);
-        btnAddList.frame = CGRect(x: enterListName.frame.maxX + margin, y: enterListName.frame.origin.y, width: 50, height: enterListName.frame.height);
-        btnAddList.backgroundColor = UIColor.white;
-        btnAddList.setBorder();
-        btnAddList.addTarget(self, action: #selector(ViewController.btnAddListWasClicked(_:)), for: .touchUpInside);
-        btnAddList.alpha = 0.8;
-        view.addSubview(btnAddList);
+        btnAddList = viewBuilder.addSquareSystemButton(position: CGPoint(x: enterListName.frame.maxX + margin, y: enterListName.frame.origin.y), title: "+", addToView: view);
+        btnAddList.addTarget(self, action: #selector(ViewController.btnAddListWasClicked(_:)), for: .touchUpInside);    
         
         tblLists = UITableView(frame: CGRect(x: margin, y: enterListName.frame.maxY + margin, width:view.frame.width - 2*margin, height: view.frame.height - (enterListName.frame.maxY + margin)), style: .plain);
         tblLists.setBorder();
@@ -113,11 +104,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell!.tag = indexPath.row;
         return cell!;
     }
-    
+    // go to the selected list
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showCurrentListViewController(index: indexPath.row);
     }
-    
+    // delete list with swipe
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         return .delete;
     }
@@ -150,7 +141,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func addListToList(){
         var enteredListName: String;
         if !enterListName.hasText{
-           enteredListName = "unnamed";
+           enteredListName = "Unnamed";
         }
         else{
             enteredListName = enterListName.text!;

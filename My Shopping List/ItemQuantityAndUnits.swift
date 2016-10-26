@@ -53,6 +53,8 @@ class ItemQuantityAndUnits: NSObject, NSCoding {
         }
     }
     
+    //MARK: toString methods
+    //transform quantity to string with formatting
     func quantityToString() -> String{
         if _quantity.truncatingRemainder(dividingBy: 1) == 0{
             return String(format: "%.0f", _quantity);
@@ -62,6 +64,7 @@ class ItemQuantityAndUnits: NSObject, NSCoding {
         }
     }
     
+    //transform quantity and units to string
     func toString () -> String {
         return quantityToString() + " " + unit;
     }

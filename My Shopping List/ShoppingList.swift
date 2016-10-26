@@ -54,6 +54,7 @@ class ShoppingList: NSObject, NSCoding {
         }
     }
     
+    //return shopping list with items and their quantities and units as one string
     func describeShoppingList() -> String{
         var description: String = _name + ": ";
         for i in 0..<itemList.count{

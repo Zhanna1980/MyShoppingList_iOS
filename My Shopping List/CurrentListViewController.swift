@@ -20,8 +20,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     var optionsMenu: OptionsMenu!;
     var currentList: ShoppingList!;
     var editItemViewController: EditItemViewController!;
-    var imagePickerHelper: ImagePickerHelper!;
     var displayImageViewController: DisplayImageViewController!;
+    let viewBuilder = ViewBuilder();
     
     let margin: CGFloat = 5;
     
@@ -34,25 +34,17 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
         view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
-        imagePickerHelper = ImagePickerHelper(viewController: self);
-        
         let header = UIView(frame: CGRect(x: margin, y: 30, width: view.frame.width - 2*margin, height: 65));
         header.tag = OptionsMenu.viewToBeHiddenTag;
         view.addSubview(header);
     
-        btnBack = UIButton(type: .system);
-        btnBack.frame = CGRect(x: 0, y: 0, width: 100, height: 30);
-        btnBack.setTitle("<<Back", for: .normal);
+        btnBack = viewBuilder.addSimpleSystemButton(frame: CGRect(x: 0, y: 0, width: 100, height: 30), title: "<<Back", addToView: header);
+        btnBack.titleLabel?.font = UIFont.systemFont(ofSize: 16);
         btnBack.addTarget(self, action: #selector(CurrentListViewController.btnBackClicked(_:)), for: .touchUpInside);
-        header.addSubview(btnBack);
-        
-        
-        
-        lblTitle = UILabel(frame: CGRect(x: 0, y: btnBack.frame.maxY + margin, width: header.frame.width, height: 30));
+    
+        lblTitle = viewBuilder.addLabel(frame: CGRect(x: 0, y: btnBack.frame.maxY + margin, width: header.frame.width, height: 30), text: currentList.name, addToView: header);
         lblTitle.textAlignment = .center;
         lblTitle.font = UIFont.systemFont(ofSize: 18);
-        lblTitle.text = currentList.name;
-        header.addSubview(lblTitle);
         
         optionsMenu = OptionsMenu(view: view, options: [
                         Option(icon: #imageLiteral(resourceName: "ic_mode_edit"), label: "Edit"),
@@ -61,22 +53,12 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                         Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
-        enterItemName = UITextField(frame: CGRect(x: margin, y: header.frame.maxY + margin, width: view.frame.width - 3*margin - 50, height: 50));
-        enterItemName.borderStyle = .roundedRect;
+        enterItemName = viewBuilder.addTextField(frame: CGRect(x: margin, y: header.frame.maxY + margin, width: view.frame.width - 3*margin - 50, height: 50), addToView: view);
         enterItemName.placeholder = "Enter an item name";
-        enterItemName.setBorder();
-        enterItemName.alpha = 0.8;
         enterItemName.delegate = self;
-        view.addSubview(enterItemName);
         
-        btnAddItem = UIButton(type: .system);
-        btnAddItem.frame = CGRect(x: enterItemName.frame.maxX + margin, y: enterItemName.frame.origin.y, width: 50, height: 50);
-        btnAddItem.setTitle("+", for: .normal);
-        btnAddItem.backgroundColor = UIColor.white;
-        btnAddItem.alpha = 0.8;
-        btnAddItem.setBorder();
+        btnAddItem = viewBuilder.addSquareSystemButton(position: CGPoint(x: enterItemName.frame.maxX + margin, y: enterItemName.frame.origin.y), title: "+", addToView: view);
         btnAddItem.addTarget(self, action: #selector(CurrentListViewController.btnAddItemClicked(_:)), for: .touchUpInside);
-        view.addSubview(btnAddItem);
         
         
         tblItemsInList = UITableView(frame: CGRect(x: margin, y: enterItemName.frame.maxY + margin, width: view.frame.width - 2*margin, height: view.frame.height - enterItemName.frame.maxY - 2*margin), style: .grouped);
@@ -117,6 +99,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         processTextFieldData();
     }
     
+    // user pressed enter on the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         processTextFieldData();
         return true;
@@ -299,9 +282,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 50;
     }
-    
+    // define view for footer
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        
         var count = 0;
         if section == 0{
             count = currentList.itemList.count;
@@ -310,35 +292,28 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             count = currentList.itemsInTheCart.count;
         }
         let labelText = (count != 1 ? "\(count) items" : "\(count) item");
-
  
         let viewContainer = UIView();
         viewContainer.sizeToFit();
         viewContainer.layer.borderWidth = 3;
         viewContainer.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         
-        let footerLabel = UILabel(frame: CGRect(x: 5, y: 10, width: 100, height: 30));
-        footerLabel.text = labelText;
-        viewContainer.addSubview(footerLabel);
+        let footerLabel = viewBuilder.addLabel(frame: CGRect(x: 5, y: 10, width: 100, height: 30), text: labelText, addToView: viewContainer);
         
-        let btnCheckUncheckAll = UIButton(type: .system);
-        btnCheckUncheckAll.frame = CGRect(x: footerLabel.frame.maxX + margin, y: footerLabel.frame.origin.y, width: 90, height: 30);
-        btnCheckUncheckAll.setTitle(section == 0 ? "Check all" : "Uncheck all", for: .normal);
+        let btnTitle = section == 0 ? "Check all" : "Uncheck all";
+        
+        let btnCheckUncheckAll = viewBuilder.addSimpleSystemButton(frame: CGRect(x: footerLabel.frame.maxX + margin, y: footerLabel.frame.origin.y, width: 90, height: 30), title: btnTitle, addToView: viewContainer);
         btnCheckUncheckAll.backgroundColor = UIColor.white;
         btnCheckUncheckAll.setBorder();
         btnCheckUncheckAll.addTarget(self, action: #selector(CurrentListViewController.checkUncheckAll(_:)), for: .touchUpInside);
         btnCheckUncheckAll.tag = section;
-        viewContainer.addSubview(btnCheckUncheckAll);
         
-        let btnDeleteAll = UIButton(type: .system);
-        btnDeleteAll.frame = CGRect(x: btnCheckUncheckAll.frame.maxX + margin, y: btnCheckUncheckAll.frame.origin.y, width: 90, height: 30);
-        btnDeleteAll.setTitle("Delete all", for: .normal);
+        let btnDeleteAll = viewBuilder.addSimpleSystemButton(frame: CGRect(x: btnCheckUncheckAll.frame.maxX + margin, y: btnCheckUncheckAll.frame.origin.y, width: 90, height: 30), title: "Delete all", addToView: viewContainer);
         btnDeleteAll.backgroundColor = UIColor.white;
         btnDeleteAll.setBorder();
         btnDeleteAll.addTarget(self, action: #selector(CurrentListViewController.deleteAll(_:)), for: .touchUpInside);
         btnDeleteAll.tag = section;
-        viewContainer.addSubview(btnDeleteAll);
-
+    
         return viewContainer;
         
     }

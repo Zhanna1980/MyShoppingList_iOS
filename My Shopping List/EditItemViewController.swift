@@ -41,54 +41,35 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     override func viewDidLoad() {
         view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
-        btnCancel = UIButton(type: .system);
-        btnCancel.frame = CGRect(x: margin, y: 30, width: 70, height: 30);
-        btnCancel.setTitle("Cancel", for: .normal);
+        let viewBuilder = ViewBuilder();
+        
+        btnCancel = viewBuilder.addSimpleSystemButton(frame: CGRect(x: margin, y: 30, width: 70, height: 30), title: "Cancel", addToView: view);
         btnCancel.titleLabel?.font = UIFont.systemFont(ofSize: 16);
         btnCancel.addTarget(self, action: #selector(EditItemViewController.btnCancelClicked(_:)), for: .touchUpInside);
-        view.addSubview(btnCancel);
         
-        btnDone = UIButton(type: .system);
-        btnDone.frame = CGRect(x: view.frame.width - 70 - margin, y: 30, width: 70, height: 30);
-        btnDone.setTitle("Done", for: .normal);
+        btnDone = viewBuilder.addSimpleSystemButton(frame: CGRect(x: view.frame.width - 70 - margin, y: 30, width: 70, height: 30), title: "Done", addToView: view);
         btnDone.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16);
         btnDone.addTarget(self, action: #selector(EditItemViewController.btnDoneClicked(_:)), for: .touchUpInside);
-        view.addSubview(btnDone);
         
-        editItemName = UITextField(frame: CGRect(x: margin, y: btnCancel.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50));
-        editItemName.borderStyle = .roundedRect;
-        editItemName.backgroundColor = UIColor.white;
-        editItemName.alpha = 0.8;
-        editItemName.setBorder();
+        editItemName = viewBuilder.addTextField(frame: CGRect(x: margin, y: btnCancel.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50), addToView: view);
         editItemName.delegate = self;
         editItemName.becomeFirstResponder();
-        view.addSubview(editItemName);
         
-        lblQuantity = UILabel(frame: CGRect(x: margin, y: editItemName.frame.maxY + 30, width: 70, height: 30));
-        lblQuantity.text = "Quantity:";
-        view.addSubview(lblQuantity);
-        
-        enterQuantity = UITextField(frame: CGRect(x: lblQuantity.frame.maxX + margin, y: lblQuantity.frame.origin.y, width: 50, height: 30));
-        enterQuantity.borderStyle = .roundedRect;
-        enterQuantity.setBorder();
-        enterQuantity.backgroundColor = UIColor.white;
-        enterQuantity.alpha = 0.8;
+        lblQuantity = viewBuilder.addLabel(frame: CGRect(x: margin, y: editItemName.frame.maxY + 30, width: 70, height: 30), text: "Quantity:", addToView: view);
+            
+        enterQuantity = viewBuilder.addTextField(frame: CGRect(x: lblQuantity.frame.maxX + margin, y: lblQuantity.frame.origin.y, width: 50, height: 30), addToView: view);
         enterQuantity.delegate = self;
         enterQuantity.keyboardType = .numbersAndPunctuation;
-        view.addSubview(enterQuantity);
         
         unitsView = UIView(frame: CGRect(x: enterQuantity.frame.maxX + 20, y: enterQuantity.frame.origin.y, width: 130, height: 30));
         unitsView.setBorder();
         unitsView.backgroundColor = UIColor.clear;
         view.addSubview(unitsView);
 
-        enterUnits = UITextField(frame: CGRect(x: 0, y: 0, width: 100, height: 30));
-        enterUnits.borderStyle = .roundedRect;
-        enterUnits.backgroundColor = UIColor.white;
-        enterUnits.alpha = 0.8;
+        enterUnits = viewBuilder.addTextField(frame: CGRect(x: 0, y: 0, width: 100, height: 30), addToView: unitsView);
         enterUnits.delegate = self;
+        enterUnits.layer.cornerRadius = 0;
         enterUnits.placeholder = "units";
-        unitsView.addSubview(enterUnits);
         
         btnOpenUnitsDropDown = UIButton(type: .custom);
         btnOpenUnitsDropDown.frame = CGRect(x: enterUnits.frame.maxX, y: enterUnits.frame.origin.y, width: 30, height: 30);
@@ -98,56 +79,26 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnOpenUnitsDropDown.addTarget(self, action: #selector(EditItemViewController.openUnitsDropDown(_:)), for: .touchUpInside);
         unitsView.addSubview(btnOpenUnitsDropDown);
         
+        lblCategory = viewBuilder.addLabel(frame: CGRect(x: margin, y: lblQuantity.frame.maxY + 20, width: 100, height: 30), text: "Category:", addToView: view);
         
-        lblCategory = UILabel(frame: CGRect(x: margin, y: lblQuantity.frame.maxY + 20, width: 100, height: 30));
-        lblCategory.text = "Category:";
-        view.addSubview(lblCategory);
-        
-        enterCategory = UITextField(frame: CGRect(x: lblCategory.frame.maxX + margin, y: lblCategory.frame.origin.y, width: view.frame.width - lblCategory.frame.maxX - 3*margin, height: 30));
-        enterCategory.borderStyle = .roundedRect;
-        enterCategory.setBorder();
-        enterCategory.alpha = 0.8;
+        enterCategory = viewBuilder.addTextField(frame: CGRect(x: lblCategory.frame.maxX + margin, y: lblCategory.frame.origin.y, width: view.frame.width - lblCategory.frame.maxX - 3*margin, height: 30), addToView: view);
         enterCategory.delegate = self;
-        view.addSubview(enterCategory);
         
-        lblNotes = UILabel(frame: CGRect(x: margin, y: lblCategory.frame.maxY + 20, width: 70, height: 30));
-        lblNotes.text = "Notes:";
-        view.addSubview(lblNotes);
+        lblNotes = viewBuilder.addLabel(frame: CGRect(x: margin, y: lblCategory.frame.maxY + 20, width: 70, height: 30), text: "Notes:", addToView: view);
         
         notes = UITextView(frame: CGRect(x: margin, y: lblNotes.frame.maxY + margin/2, width: view.frame.width - 2*margin, height: 60));
         notes.setBorder();
         notes.alpha = 0.8;
         view.addSubview(notes);
         
-        btnTakePhoto = UIButton(type: .custom);
-        btnTakePhoto.frame = CGRect(x: margin, y: notes.frame.maxY + margin, width: 50, height: 50);
-        btnTakePhoto.contentMode = .scaleAspectFit;
-        btnTakePhoto.backgroundColor = UIColor.white;
+        btnTakePhoto = viewBuilder.addSquareButtonWithIcon(position: CGPoint(x: margin, y: notes.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_add_a_photo"), addToView: view);
         btnTakePhoto.addTarget(self, action: #selector(EditItemViewController.btnTakePhotoClicked(_:)), for: .touchUpInside);
-        btnTakePhoto.setImage(#imageLiteral(resourceName: "ic_add_a_photo"), for: .normal);
-        btnTakePhoto.setBorder();
-        btnTakePhoto.alpha = 0.8;
-        view.addSubview(btnTakePhoto);
         
-        btnPickPhoto = UIButton(type: .custom);
-        btnPickPhoto.frame = CGRect(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin, width: 50, height: 50);
-        btnPickPhoto.contentMode = .scaleAspectFit;
-        btnPickPhoto.backgroundColor = UIColor.white;
-        btnPickPhoto.setImage(#imageLiteral(resourceName: "ic_photo_library"), for: .normal);
+        btnPickPhoto = viewBuilder.addSquareButtonWithIcon(position: CGPoint(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_photo_library"), addToView: view);
         btnPickPhoto.addTarget(self, action: #selector(EditItemViewController.btnPickPhotoClicked(_:)), for: .touchUpInside);
-        btnPickPhoto.setBorder();
-        btnPickPhoto.alpha = 0.8;
-        view.addSubview(btnPickPhoto);
         
-        btnDeletePhoto = UIButton(type: .custom);
-        btnDeletePhoto.frame = CGRect(x: btnPickPhoto.frame.origin.x, y: btnPickPhoto.frame.maxY + margin, width: 50, height: 50);
-        btnDeletePhoto.contentMode = .scaleAspectFit;
-        btnDeletePhoto.backgroundColor = UIColor.white;
-        btnDeletePhoto.setImage(#imageLiteral(resourceName: "ic_delete"), for: .normal);
+        btnDeletePhoto = viewBuilder.addSquareButtonWithIcon(position: CGPoint(x: btnPickPhoto.frame.origin.x, y: btnPickPhoto.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_delete"), addToView: view);
         btnDeletePhoto.addTarget(self, action: #selector(EditItemViewController.btnDeletePhotoClicked(_:)), for: .touchUpInside);
-        btnDeletePhoto.setBorder();
-        btnDeletePhoto.alpha = 0.8;
-        view.addSubview(btnDeletePhoto);
         
         itemPhoto = UIImageView(frame: CGRect(x: btnTakePhoto.frame.maxX + margin, y: btnTakePhoto.frame.origin.y, width: view.frame.width - btnTakePhoto.frame.maxX - 3*margin, height: view.frame.height - btnTakePhoto.frame.origin.y - margin));
         itemPhoto.contentMode = .scaleAspectFit;
@@ -255,14 +206,14 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         
     }
     
-    //MARK: Editing the photo:
-    // a new photo
+    //MARK: Editing the photo
+    // take a new photo
     func btnTakePhotoClicked(_ sender: UIButton){
         imagePickerHelper.delegate = self;
         imagePickerHelper.pickPhoto(shouldTakeNewPhoto: true);
     }
     
-    // picking a photo from Photo Library:
+    // pick a photo from Photo Library
     func btnPickPhotoClicked(_ sender: UIButton){
         imagePickerHelper.delegate = self;
         imagePickerHelper.pickPhoto(shouldTakeNewPhoto: false);
@@ -277,11 +228,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     
     // deleting the photo
     func btnDeletePhotoClicked(_ sender: UIButton){
-        if editedItem.itemImage != nil{
-            editedItem.itemImage = nil;
             itemPhoto.image = nil;
-            itemPhoto.backgroundColor = UIColor.lightGray;
-        }
     }
     
     //MARK: Leaving editViewController
