@@ -9,7 +9,7 @@
 import Foundation
 
 //Class to represent item units and quantities
-class ItemCalculations: NSObject, NSCoding {
+class ItemQuantityAndUnits: NSObject, NSCoding {
     
     // MARK: Properties
     fileprivate var _unit: String;

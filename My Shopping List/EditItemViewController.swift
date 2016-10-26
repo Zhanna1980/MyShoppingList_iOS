@@ -59,10 +59,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         editItemName.borderStyle = .roundedRect;
         editItemName.backgroundColor = UIColor.white;
         editItemName.alpha = 0.8;
-        editItemName.layer.cornerRadius = 9;
-        editItemName.layer.borderWidth = 3;
-        editItemName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
-        editItemName.layer.masksToBounds = true;
+        editItemName.setBorder();
         editItemName.delegate = self;
         editItemName.becomeFirstResponder();
         view.addSubview(editItemName);
@@ -73,10 +70,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         
         enterQuantity = UITextField(frame: CGRect(x: lblQuantity.frame.maxX + margin, y: lblQuantity.frame.origin.y, width: 50, height: 30));
         enterQuantity.borderStyle = .roundedRect;
-        enterQuantity.layer.masksToBounds = true;
-        enterQuantity.layer.borderWidth = 3;
-        enterQuantity.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
-        enterQuantity.layer.cornerRadius = 9;
+        enterQuantity.setBorder();
         enterQuantity.backgroundColor = UIColor.white;
         enterQuantity.alpha = 0.8;
         enterQuantity.delegate = self;
@@ -84,11 +78,8 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         view.addSubview(enterQuantity);
         
         unitsView = UIView(frame: CGRect(x: enterQuantity.frame.maxX + 20, y: enterQuantity.frame.origin.y, width: 130, height: 30));
-        unitsView.layer.cornerRadius = 9;
-        unitsView.layer.borderWidth = 3;
-        unitsView.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        unitsView.setBorder();
         unitsView.backgroundColor = UIColor.clear;
-        unitsView.layer.masksToBounds = true;
         view.addSubview(unitsView);
 
         enterUnits = UITextField(frame: CGRect(x: 0, y: 0, width: 100, height: 30));
@@ -104,8 +95,6 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnOpenUnitsDropDown.setImage(#imageLiteral(resourceName: "ic_arrow_drop_down"), for: .normal);
         btnOpenUnitsDropDown.backgroundColor = UIColor.white;
         btnOpenUnitsDropDown.alpha = 0.8;
-        unitsView.layer.borderWidth = 3;
-        unitsView.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         btnOpenUnitsDropDown.addTarget(self, action: #selector(EditItemViewController.openUnitsDropDown(_:)), for: .touchUpInside);
         unitsView.addSubview(btnOpenUnitsDropDown);
         
@@ -116,11 +105,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         
         enterCategory = UITextField(frame: CGRect(x: lblCategory.frame.maxX + margin, y: lblCategory.frame.origin.y, width: view.frame.width - lblCategory.frame.maxX - 3*margin, height: 30));
         enterCategory.borderStyle = .roundedRect;
-        enterCategory.layer.borderWidth = 3;
-        enterCategory.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
-        enterCategory.backgroundColor = UIColor.white;
-        enterCategory.layer.masksToBounds = true;
-        enterCategory.layer.cornerRadius = 9;
+        enterCategory.setBorder();
         enterCategory.alpha = 0.8;
         enterCategory.delegate = self;
         view.addSubview(enterCategory);
@@ -130,9 +115,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         view.addSubview(lblNotes);
         
         notes = UITextView(frame: CGRect(x: margin, y: lblNotes.frame.maxY + margin/2, width: view.frame.width - 2*margin, height: 60));
-        notes.layer.borderWidth = 3;
-        notes.layer.cornerRadius = 9;
-        notes.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        notes.setBorder();
         notes.alpha = 0.8;
         view.addSubview(notes);
         
@@ -142,9 +125,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnTakePhoto.backgroundColor = UIColor.white;
         btnTakePhoto.addTarget(self, action: #selector(EditItemViewController.btnTakePhotoClicked(_:)), for: .touchUpInside);
         btnTakePhoto.setImage(#imageLiteral(resourceName: "ic_add_a_photo"), for: .normal);
-        btnTakePhoto.layer.cornerRadius = 9;
-        btnTakePhoto.layer.borderWidth = 3;
-        btnTakePhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnTakePhoto.setBorder();
         btnTakePhoto.alpha = 0.8;
         view.addSubview(btnTakePhoto);
         
@@ -154,9 +135,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnPickPhoto.backgroundColor = UIColor.white;
         btnPickPhoto.setImage(#imageLiteral(resourceName: "ic_photo_library"), for: .normal);
         btnPickPhoto.addTarget(self, action: #selector(EditItemViewController.btnPickPhotoClicked(_:)), for: .touchUpInside);
-        btnPickPhoto.layer.cornerRadius = 9;
-        btnPickPhoto.layer.borderWidth = 3;
-        btnPickPhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnPickPhoto.setBorder();
         btnPickPhoto.alpha = 0.8;
         view.addSubview(btnPickPhoto);
         
@@ -166,18 +145,14 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnDeletePhoto.backgroundColor = UIColor.white;
         btnDeletePhoto.setImage(#imageLiteral(resourceName: "ic_delete"), for: .normal);
         btnDeletePhoto.addTarget(self, action: #selector(EditItemViewController.btnDeletePhotoClicked(_:)), for: .touchUpInside);
-        btnDeletePhoto.layer.cornerRadius = 9;
-        btnDeletePhoto.layer.borderWidth = 3;
-        btnDeletePhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnDeletePhoto.setBorder();
         btnDeletePhoto.alpha = 0.8;
         view.addSubview(btnDeletePhoto);
         
         itemPhoto = UIImageView(frame: CGRect(x: btnTakePhoto.frame.maxX + margin, y: btnTakePhoto.frame.origin.y, width: view.frame.width - btnTakePhoto.frame.maxX - 3*margin, height: view.frame.height - btnTakePhoto.frame.origin.y - margin));
         itemPhoto.contentMode = .scaleAspectFit;
         itemPhoto.backgroundColor = UIColor.white;
-        itemPhoto.layer.cornerRadius = 9;
-        itemPhoto.layer.borderWidth = 3;
-        itemPhoto.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        itemPhoto.setBorder();
         itemPhoto.alpha = 0.8;
         view.addSubview(itemPhoto);
         
@@ -205,8 +180,8 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     //MARK: - Fills data according to the edited item
     func fillDataInViewController(){
         editItemName.text = editedItem.name;
-        enterQuantity.text = editedItem.calculations.quantityToString();
-        enterUnits.text = editedItem.calculations.unit;
+        enterQuantity.text = editedItem.itemQuantityAndUnits.quantityToString();
+        enterUnits.text = editedItem.itemQuantityAndUnits.unit;
         
         if let theCategory = editedItem.category{
             enterCategory.text = theCategory;
@@ -331,21 +306,21 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         if enterQuantity.hasText{
             let enteredQuantity = Float(enterQuantity.text!);
             if let theEnteredQuantity = enteredQuantity {
-                editedItem.calculations.quantity = theEnteredQuantity;
+                editedItem.itemQuantityAndUnits.quantity = theEnteredQuantity;
             }
             else{
                     showAlertController(message: "Invalid quantity");
             }
         }
         else{
-            editedItem.calculations.quantity = 1;
+            editedItem.itemQuantityAndUnits.quantity = 1;
         }
         if enterUnits.hasText{
             let enteredUnits = enterUnits.text!.localizedLowercase;
-            editedItem.calculations.unit = enteredUnits;
+            editedItem.itemQuantityAndUnits.unit = enteredUnits;
         }
         else{
-            editedItem.calculations.unit = "";
+            editedItem.itemQuantityAndUnits.unit = "";
         }
         
         if enterCategory.hasText{

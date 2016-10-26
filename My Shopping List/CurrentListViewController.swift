@@ -64,10 +64,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         enterItemName = UITextField(frame: CGRect(x: margin, y: header.frame.maxY + margin, width: view.frame.width - 3*margin - 50, height: 50));
         enterItemName.borderStyle = .roundedRect;
         enterItemName.placeholder = "Enter an item name";
-        enterItemName.layer.cornerRadius = 9;
-        enterItemName.layer.borderWidth = 3;
-        enterItemName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
-        enterItemName.layer.masksToBounds = true;
+        enterItemName.setBorder();
         enterItemName.alpha = 0.8;
         enterItemName.delegate = self;
         view.addSubview(enterItemName);
@@ -77,17 +74,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         btnAddItem.setTitle("+", for: .normal);
         btnAddItem.backgroundColor = UIColor.white;
         btnAddItem.alpha = 0.8;
-        btnAddItem.layer.cornerRadius = 9;
-        btnAddItem.layer.borderWidth = 3;
-        btnAddItem.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnAddItem.setBorder();
         btnAddItem.addTarget(self, action: #selector(CurrentListViewController.btnAddItemClicked(_:)), for: .touchUpInside);
         view.addSubview(btnAddItem);
         
         
         tblItemsInList = UITableView(frame: CGRect(x: margin, y: enterItemName.frame.maxY + margin, width: view.frame.width - 2*margin, height: view.frame.height - enterItemName.frame.maxY - 2*margin), style: .grouped);
-        tblItemsInList.layer.cornerRadius = 9;
-        tblItemsInList.layer.borderWidth = 3;
-        tblItemsInList.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        tblItemsInList.setBorder();
         tblItemsInList.alpha = 0.8;
         tblItemsInList.dataSource = self;
         tblItemsInList.delegate = self;
@@ -227,7 +220,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         if indexPath.section == 0{
             
             lblItemName.text = currentList.itemList[indexPath.row].name;
-            lblItemCalculations.text = currentList.itemList[indexPath.row].calculations.toString();
+            lblItemCalculations.text = currentList.itemList[indexPath.row].itemQuantityAndUnits.toString();
             checkbox.setChecked(checked: false);
             checkbox.tag = indexPath.row;
             // photo button
@@ -244,7 +237,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
         else{
             lblItemName.text = currentList.itemsInTheCart[indexPath.row].name;
-            lblItemCalculations.text = currentList.itemsInTheCart[indexPath.row].calculations.toString();
+            lblItemCalculations.text = currentList.itemsInTheCart[indexPath.row].itemQuantityAndUnits.toString();
             checkbox.setChecked(checked: true);
             checkbox.tag = indexPath.row;
             // photo button
@@ -332,9 +325,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         btnCheckUncheckAll.frame = CGRect(x: footerLabel.frame.maxX + margin, y: footerLabel.frame.origin.y, width: 90, height: 30);
         btnCheckUncheckAll.setTitle(section == 0 ? "Check all" : "Uncheck all", for: .normal);
         btnCheckUncheckAll.backgroundColor = UIColor.white;
-        btnCheckUncheckAll.layer.cornerRadius = 9;
-        btnCheckUncheckAll.layer.borderWidth = 3;
-        btnCheckUncheckAll.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnCheckUncheckAll.setBorder();
         btnCheckUncheckAll.addTarget(self, action: #selector(CurrentListViewController.checkUncheckAll(_:)), for: .touchUpInside);
         btnCheckUncheckAll.tag = section;
         viewContainer.addSubview(btnCheckUncheckAll);
@@ -343,9 +334,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         btnDeleteAll.frame = CGRect(x: btnCheckUncheckAll.frame.maxX + margin, y: btnCheckUncheckAll.frame.origin.y, width: 90, height: 30);
         btnDeleteAll.setTitle("Delete all", for: .normal);
         btnDeleteAll.backgroundColor = UIColor.white;
-        btnDeleteAll.layer.cornerRadius = 9;
-        btnDeleteAll.layer.borderWidth = 3;
-        btnDeleteAll.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnDeleteAll.setBorder();
         btnDeleteAll.addTarget(self, action: #selector(CurrentListViewController.deleteAll(_:)), for: .touchUpInside);
         btnDeleteAll.tag = section;
         viewContainer.addSubview(btnDeleteAll);
@@ -456,7 +445,8 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
     //copy or move selected item to other list
     func copyOrMoveSelectedItemToOtherList(selectedRow: IndexPath, shouldCopyItem: Bool){
-        if CurrentState.instance.listsList.count <= 1{
+        if CurrentState.instance.listsList.count == 1{
+            //there are no other lists to move or to copy the item to
             return;
         }
         let item: Item = selectedRow.section == 0 ? currentList.itemList[selectedRow.row] : currentList.itemsInTheCart[selectedRow.row];
@@ -535,7 +525,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             isMenuShown = true;
         }
     }
-    
+    //returning keyboard and hiding options menu
     func textFieldDidBeginEditing(_ textField: UITextField) {
         enterItemName.becomeFirstResponder();
         hideMenuIfItIsShown();

@@ -22,7 +22,7 @@
 		2BD990CC1D9123DE00C24899 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2BD990CA1D9123DE00C24899 /* LaunchScreen.storyboard */; };
 		2BD990D41D91247E00C24899 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990D31D91247E00C24899 /* Item.swift */; };
 		2BD990D61D91249A00C24899 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990D51D91249A00C24899 /* ShoppingList.swift */; };
-		2BD990DA1D91252800C24899 /* ItemCalculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990D91D91252800C24899 /* ItemCalculations.swift */; };
+		2BD990DA1D91252800C24899 /* ItemQuantityAndUnits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD990D91D91252800C24899 /* ItemQuantityAndUnits.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +43,7 @@
 		2BD990CD1D9123DE00C24899 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2BD990D31D91247E00C24899 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		2BD990D51D91249A00C24899 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
-		2BD990D91D91252800C24899 /* ItemCalculations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemCalculations.swift; sourceTree = "<group>"; };
+		2BD990D91D91252800C24899 /* ItemQuantityAndUnits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemQuantityAndUnits.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				2BD990CD1D9123DE00C24899 /* Info.plist */,
 				2BD990D31D91247E00C24899 /* Item.swift */,
 				2BD990D51D91249A00C24899 /* ShoppingList.swift */,
-				2BD990D91D91252800C24899 /* ItemCalculations.swift */,
+				2BD990D91D91252800C24899 /* ItemQuantityAndUnits.swift */,
 				2B1D33321D93BC6F0066CB6A /* CurrentListViewController.swift */,
 				2B24D07D1DA2657200E1DBD6 /* Checkbox.swift */,
 				2B21EE9A1DA4DC7A00CFCB90 /* OptionsMenu.swift */,
@@ -172,7 +172,7 @@
 			files = (
 				2B25EC991DB62EA5008C086C /* CurrentState.swift in Sources */,
 				2B24D07E1DA2657200E1DBD6 /* Checkbox.swift in Sources */,
-				2BD990DA1D91252800C24899 /* ItemCalculations.swift in Sources */,
+				2BD990DA1D91252800C24899 /* ItemQuantityAndUnits.swift in Sources */,
 				2BD990C41D9123DE00C24899 /* ViewController.swift in Sources */,
 				2BD990D41D91247E00C24899 /* Item.swift in Sources */,
 				2BD990D61D91249A00C24899 /* ShoppingList.swift in Sources */,

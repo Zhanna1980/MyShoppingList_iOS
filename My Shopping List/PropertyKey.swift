@@ -17,8 +17,8 @@ struct PropertyKey {
     static let itemImageKey = "itemImage";
     static let categoryKey = "category";
     static let notesKey = "notes";
-    static let calculationsKey = "calculations";
-    // for ItemCalculations class:
+    static let quantityAndUnitsKey = "quantityAndUnits";
+    // for ItemQuantityAndUnits class:
     static let unitKey = "unit";
     static let quantityKey = "quantity";
     // for ShoppingList class:

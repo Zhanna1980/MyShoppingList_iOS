@@ -7,6 +7,17 @@
 //
 
 import UIKit
+
+// function for setting one style custom border to different views
+extension UIView{
+    func setBorder(){
+        self.layer.cornerRadius = 9;
+        self.layer.borderWidth = 3;
+        self.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        self.layer.masksToBounds = true;
+    }
+}
+
 // Represents the list of shopping lists
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, OptionWasSelectedDelegate {
     
@@ -48,10 +59,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         enterListName = UITextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50));
         enterListName.borderStyle = .roundedRect;
-        enterListName.layer.cornerRadius = 9;
-        enterListName.layer.borderWidth = 3;
-        enterListName.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
-        enterListName.layer.masksToBounds = true;
+        enterListName.setBorder();
         enterListName.placeholder = "Add a new list";
         enterListName.delegate = self;
         enterListName.alpha = 0.8;
@@ -61,17 +69,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         btnAddList.setTitle("+", for: .normal);
         btnAddList.frame = CGRect(x: enterListName.frame.maxX + margin, y: enterListName.frame.origin.y, width: 50, height: enterListName.frame.height);
         btnAddList.backgroundColor = UIColor.white;
-        btnAddList.layer.cornerRadius = 9;
-        btnAddList.layer.borderWidth = 3;
-        btnAddList.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        btnAddList.setBorder();
         btnAddList.addTarget(self, action: #selector(ViewController.btnAddListWasClicked(_:)), for: .touchUpInside);
         btnAddList.alpha = 0.8;
         view.addSubview(btnAddList);
         
         tblLists = UITableView(frame: CGRect(x: margin, y: enterListName.frame.maxY + margin, width:view.frame.width - 2*margin, height: view.frame.height - (enterListName.frame.maxY + margin)), style: .plain);
-        tblLists.layer.cornerRadius = 9;
-        tblLists.layer.borderWidth = 3;
-        tblLists.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        tblLists.setBorder();
         tblLists.delegate = self;
         tblLists.dataSource = self;
         tblLists.alpha = 0.8;

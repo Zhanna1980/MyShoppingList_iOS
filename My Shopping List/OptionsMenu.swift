@@ -45,9 +45,7 @@ class OptionsMenu: UIView{
     // Add an option with specified text and image
     fileprivate func addOption(icon: UIImage, label: String){
         let container = UIView(frame: CGRect(x: max, y: self.frame.origin.y + 30, width: _optionWidth, height: self.frame.height - 30));
-        container.layer.cornerRadius = 9;
-        container.layer.borderWidth = 3;
-        container.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
+        container.setBorder();
         self.addSubview(container);
         
         let optionIcon = UIImageView(frame: CGRect(x: 0, y: 5, width: 20, height: 20));
