@@ -41,23 +41,23 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     override func viewDidLoad() {
         view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
-        let viewBuilder = ViewBuilder();
-        
-        btnCancel = viewBuilder.addSimpleSystemButton(frame: CGRect(x: margin, y: 30, width: 70, height: 30), title: "Cancel", addToView: view);
+        // cancel button
+        btnCancel = ViewBuilder.addSimpleSystemButton(frame: CGRect(x: margin, y: 30, width: 70, height: 30), title: "Cancel", addToView: view);
         btnCancel.titleLabel?.font = UIFont.systemFont(ofSize: 16);
         btnCancel.addTarget(self, action: #selector(EditItemViewController.btnCancelClicked(_:)), for: .touchUpInside);
         
-        btnDone = viewBuilder.addSimpleSystemButton(frame: CGRect(x: view.frame.width - 70 - margin, y: 30, width: 70, height: 30), title: "Done", addToView: view);
+        // done button
+        btnDone = ViewBuilder.addSimpleSystemButton(frame: CGRect(x: view.frame.width - 70 - margin, y: 30, width: 70, height: 30), title: "Done", addToView: view);
         btnDone.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16);
         btnDone.addTarget(self, action: #selector(EditItemViewController.btnDoneClicked(_:)), for: .touchUpInside);
         
-        editItemName = viewBuilder.addTextField(frame: CGRect(x: margin, y: btnCancel.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50), addToView: view);
+        editItemName = ViewBuilder.addTextField(frame: CGRect(x: margin, y: btnCancel.frame.maxY + margin, width: view.frame.width - 2*margin, height: 50), addToView: view);
         editItemName.delegate = self;
         editItemName.becomeFirstResponder();
         
-        lblQuantity = viewBuilder.addLabel(frame: CGRect(x: margin, y: editItemName.frame.maxY + 30, width: 70, height: 30), text: "Quantity:", addToView: view);
+        lblQuantity = ViewBuilder.addLabel(frame: CGRect(x: margin, y: editItemName.frame.maxY + 30, width: 70, height: 30), text: "Quantity:", addToView: view);
             
-        enterQuantity = viewBuilder.addTextField(frame: CGRect(x: lblQuantity.frame.maxX + margin, y: lblQuantity.frame.origin.y, width: 50, height: 30), addToView: view);
+        enterQuantity = ViewBuilder.addTextField(frame: CGRect(x: lblQuantity.frame.maxX + margin, y: lblQuantity.frame.origin.y, width: 50, height: 30), addToView: view);
         enterQuantity.delegate = self;
         enterQuantity.keyboardType = .numbersAndPunctuation;
         
@@ -66,7 +66,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         unitsView.backgroundColor = UIColor.clear;
         view.addSubview(unitsView);
 
-        enterUnits = viewBuilder.addTextField(frame: CGRect(x: 0, y: 0, width: 100, height: 30), addToView: unitsView);
+        enterUnits = ViewBuilder.addTextField(frame: CGRect(x: 0, y: 0, width: 100, height: 30), addToView: unitsView);
         enterUnits.delegate = self;
         enterUnits.layer.cornerRadius = 0;
         enterUnits.placeholder = "units";
@@ -79,25 +79,25 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         btnOpenUnitsDropDown.addTarget(self, action: #selector(EditItemViewController.openUnitsDropDown(_:)), for: .touchUpInside);
         unitsView.addSubview(btnOpenUnitsDropDown);
         
-        lblCategory = viewBuilder.addLabel(frame: CGRect(x: margin, y: lblQuantity.frame.maxY + 20, width: 100, height: 30), text: "Category:", addToView: view);
+        lblCategory = ViewBuilder.addLabel(frame: CGRect(x: margin, y: lblQuantity.frame.maxY + 20, width: 100, height: 30), text: "Category:", addToView: view);
         
-        enterCategory = viewBuilder.addTextField(frame: CGRect(x: lblCategory.frame.maxX + margin, y: lblCategory.frame.origin.y, width: view.frame.width - lblCategory.frame.maxX - 3*margin, height: 30), addToView: view);
+        enterCategory = ViewBuilder.addTextField(frame: CGRect(x: lblCategory.frame.maxX + margin, y: lblCategory.frame.origin.y, width: view.frame.width - lblCategory.frame.maxX - 3*margin, height: 30), addToView: view);
         enterCategory.delegate = self;
         
-        lblNotes = viewBuilder.addLabel(frame: CGRect(x: margin, y: lblCategory.frame.maxY + 20, width: 70, height: 30), text: "Notes:", addToView: view);
+        lblNotes = ViewBuilder.addLabel(frame: CGRect(x: margin, y: lblCategory.frame.maxY + 20, width: 70, height: 30), text: "Notes:", addToView: view);
         
         notes = UITextView(frame: CGRect(x: margin, y: lblNotes.frame.maxY + margin/2, width: view.frame.width - 2*margin, height: 60));
         notes.setBorder();
         notes.alpha = 0.8;
         view.addSubview(notes);
         
-        btnTakePhoto = viewBuilder.addSquareButtonWithIcon(position: CGPoint(x: margin, y: notes.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_add_a_photo"), addToView: view);
+        btnTakePhoto = ViewBuilder.addSquareButtonWithIcon(position: CGPoint(x: margin, y: notes.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_add_a_photo"), addToView: view);
         btnTakePhoto.addTarget(self, action: #selector(EditItemViewController.btnTakePhotoClicked(_:)), for: .touchUpInside);
         
-        btnPickPhoto = viewBuilder.addSquareButtonWithIcon(position: CGPoint(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_photo_library"), addToView: view);
+        btnPickPhoto = ViewBuilder.addSquareButtonWithIcon(position: CGPoint(x: btnTakePhoto.frame.origin.x, y: btnTakePhoto.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_photo_library"), addToView: view);
         btnPickPhoto.addTarget(self, action: #selector(EditItemViewController.btnPickPhotoClicked(_:)), for: .touchUpInside);
         
-        btnDeletePhoto = viewBuilder.addSquareButtonWithIcon(position: CGPoint(x: btnPickPhoto.frame.origin.x, y: btnPickPhoto.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_delete"), addToView: view);
+        btnDeletePhoto = ViewBuilder.addSquareButtonWithIcon(position: CGPoint(x: btnPickPhoto.frame.origin.x, y: btnPickPhoto.frame.maxY + margin), icon: #imageLiteral(resourceName: "ic_delete"), addToView: view);
         btnDeletePhoto.addTarget(self, action: #selector(EditItemViewController.btnDeletePhotoClicked(_:)), for: .touchUpInside);
         
         itemPhoto = UIImageView(frame: CGRect(x: btnTakePhoto.frame.maxX + margin, y: btnTakePhoto.frame.origin.y, width: view.frame.width - btnTakePhoto.frame.maxX - 3*margin, height: view.frame.height - btnTakePhoto.frame.origin.y - margin));
@@ -115,6 +115,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         //initial filling of the fields
         fillDataInViewController();
         
+        //taps for hiding keyboard
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (EditItemViewController.handlingTaps(_:)));
         tapGestureRecognizer.cancelsTouchesInView = false;
         view.addGestureRecognizer(tapGestureRecognizer);
@@ -123,6 +124,7 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // The flag is been changed on true while leaving the EditItemViewController with clicking buttons "Done" or "Cancel". So it is false in this function only when the function is called for the first time.
         if shouldRefillData{
             fillDataInViewController();
         }
@@ -203,7 +205,6 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         else{
            showSuggestions();
         }
-        
     }
     
     //MARK: Editing the photo
@@ -269,7 +270,6 @@ class EditItemViewController: UIViewController, UITextFieldDelegate, UITableView
         else{
             editedItem.itemQuantityAndUnits.unit = "";
         }
-        
         if enterCategory.hasText{
             editedItem.category = enterCategory.text;
         }

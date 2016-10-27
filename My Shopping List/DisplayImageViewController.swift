@@ -34,6 +34,7 @@ class DisplayImageViewController: UIViewController, UIScrollViewDelegate{
         scrollView.indicatorStyle = .white;
         
         setZoomScale();
+        
         // taps for returning to the shopping list
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (DisplayImageViewController.handlingTaps(_:)));
         view.addGestureRecognizer(tapGestureRecognizer);

@@ -18,8 +18,9 @@ extension UIView{
     }
 }
 
+
 // Represents the list of shopping lists
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, OptionWasSelectedDelegate {
+class AllListsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, OptionWasSelectedDelegate {
     
     var lblTitle: UILabel!;
     var enterListName: UITextField!;
@@ -39,14 +40,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
+        // load application data: lists, items, etc.
         CurrentState.loadData();
         
         dateFormatter.dateFormat = "dd/MM/yy HH:mm"
         dateFormatter.locale = Locale.current;
         
-        let viewBuilder = ViewBuilder();
-        
-        lblTitle = viewBuilder.addLabel(frame: CGRect(x: margin, y: 40, width: view.frame.width - 2*margin, height: 50), text: "My lists:", addToView: view);
+        // title label
+        lblTitle = ViewBuilder.addLabel(frame: CGRect(x: margin, y: 40, width: view.frame.width - 2*margin, height: 50), text: "My lists", addToView: view);
         lblTitle.textAlignment = .center;
         //lblTitle will be hidden when options menu is shown
         lblTitle.tag = OptionsMenu.viewToBeHiddenTag;
@@ -58,13 +59,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
-        enterListName = viewBuilder.addTextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50), addToView: view);
+        //list name text box
+        enterListName = ViewBuilder.addTextField(frame: CGRect(x: margin, y: lblTitle.frame.maxY + margin, width: view.frame.width - 50 - 3*margin, height: 50), addToView: view);
         enterListName.placeholder = "Add a new list";
         enterListName.delegate = self;
         
-        btnAddList = viewBuilder.addSquareSystemButton(position: CGPoint(x: enterListName.frame.maxX + margin, y: enterListName.frame.origin.y), title: "+", addToView: view);
-        btnAddList.addTarget(self, action: #selector(ViewController.btnAddListWasClicked(_:)), for: .touchUpInside);    
+        //add button
+        btnAddList = ViewBuilder.addSquareSystemButton(position: CGPoint(x: enterListName.frame.maxX + margin, y: enterListName.frame.origin.y), title: "+", addToView: view);
+        btnAddList.addTarget(self, action: #selector(AllListsViewController.btnAddListWasClicked(_:)), for: .touchUpInside);
         
+        // table that show all lists
         tblLists = UITableView(frame: CGRect(x: margin, y: enterListName.frame.maxY + margin, width:view.frame.width - 2*margin, height: view.frame.height - (enterListName.frame.maxY + margin)), style: .plain);
         tblLists.setBorder();
         tblLists.delegate = self;
@@ -72,16 +76,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tblLists.alpha = 0.8;
         view.addSubview(tblLists);
         
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (ViewController.handlingTaps(_:)));
+        //taps for hiding options menu and keyboard
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (AllListsViewController.handlingTaps(_:)));
         tapGestureRecognizer.cancelsTouchesInView = false;
         view.addGestureRecognizer(tapGestureRecognizer);
-        
-        
     }
     
-    
     //MARK: - Defining the tableView
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
     }
@@ -93,26 +94,32 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "identifier");
         
+        //create cell if not reused
         if cell == nil{
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "identifier");
             cell?.showsReorderControl = true;
+            //on long press will be shown options menu
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
         }
+        // fill cell data
         cell!.textLabel?.text = CurrentState.instance.listsList[indexPath.row].name;
         cell!.detailTextLabel?.text = CurrentState.instance.listsList[indexPath.row].date;
         cell!.tag = indexPath.row;
         return cell!;
     }
+    
     // go to the selected list
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showCurrentListViewController(index: indexPath.row);
     }
+    
     // delete list with swipe
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         return .delete;
     }
     
+    //delete list with swipe
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete{
             CurrentState.instance.listsList.remove(at: indexPath.row);
@@ -126,6 +133,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         processTextFieldData();
     }
     
+    //user pressed enter on the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         processTextFieldData();
         return true;
@@ -194,7 +202,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             textField.text = CurrentState.instance.listsList[selectedRow].name;
         }
         let actionDone = UIAlertAction(title: "Done", style: .default, handler: { [weak self](action: UIAlertAction) in
-                CurrentState.instance.listsList[selectedRow].name = self!.editAlertController.textFields![0].text!
+            CurrentState.instance.listsList[selectedRow].name = self!.editAlertController.textFields![0].text!;
                 self!.tblLists.reloadRows(at: [IndexPath(row: selectedRow, section: 0)], with: .automatic);
                 CurrentState.instance.saveData();
 
@@ -247,7 +255,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    // showing menu on longPress
+    // showing menu on long press
     func handlingLongPressOnRow(_ sender: UILongPressGestureRecognizer){
         selectedRow = sender.view?.tag;
         tblLists.selectRow(at: IndexPath(row: selectedRow!, section: 0), animated: false, scrollPosition: .none);

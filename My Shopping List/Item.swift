@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+//Item class, represents item in the list. 
 class Item: NSObject, NSCoding{
     fileprivate var _name: String;
     fileprivate var _inTheCart: Bool = false;

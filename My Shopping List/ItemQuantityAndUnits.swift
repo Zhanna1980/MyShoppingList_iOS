@@ -34,6 +34,7 @@ class ItemQuantityAndUnits: NSObject, NSCoding {
             return _unit;
         }
         set{
+            //add a new unit to the units list if entered unit is not in the list. After that the list is being sorted alphabetically
             if !newValue.isEmpty && !CurrentState.instance.units.contains(newValue){
                 CurrentState.instance.units.append(newValue);
                 CurrentState.instance.units = CurrentState.instance.units.sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending };

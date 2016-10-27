@@ -21,7 +21,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     var currentList: ShoppingList!;
     var editItemViewController: EditItemViewController!;
     var displayImageViewController: DisplayImageViewController!;
-    let viewBuilder = ViewBuilder();
     
     let margin: CGFloat = 5;
     
@@ -34,15 +33,18 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         
         view.backgroundColor = UIColor.init(patternImage: #imageLiteral(resourceName: "Mix-of-green-vegetables"));
         
+        //header with back button and label
         let header = UIView(frame: CGRect(x: margin, y: 30, width: view.frame.width - 2*margin, height: 65));
         header.tag = OptionsMenu.viewToBeHiddenTag;
         view.addSubview(header);
     
-        btnBack = viewBuilder.addSimpleSystemButton(frame: CGRect(x: 0, y: 0, width: 100, height: 30), title: "<<Back", addToView: header);
+        // back button
+        btnBack = ViewBuilder.addSimpleSystemButton(frame: CGRect(x: 0, y: 0, width: 100, height: 30), title: "<<Back", addToView: header);
         btnBack.titleLabel?.font = UIFont.systemFont(ofSize: 16);
         btnBack.addTarget(self, action: #selector(CurrentListViewController.btnBackClicked(_:)), for: .touchUpInside);
     
-        lblTitle = viewBuilder.addLabel(frame: CGRect(x: 0, y: btnBack.frame.maxY + margin, width: header.frame.width, height: 30), text: currentList.name, addToView: header);
+        // label
+        lblTitle = ViewBuilder.addLabel(frame: CGRect(x: 0, y: btnBack.frame.maxY + margin, width: header.frame.width, height: 30), text: currentList.name, addToView: header);
         lblTitle.textAlignment = .center;
         lblTitle.font = UIFont.systemFont(ofSize: 18);
         
@@ -53,14 +55,16 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                         Option(icon: #imageLiteral(resourceName: "ic_delete"), label: "Delete")]);
         optionsMenu.optionWasSelectedDelegate = self;
         
-        enterItemName = viewBuilder.addTextField(frame: CGRect(x: margin, y: header.frame.maxY + margin, width: view.frame.width - 3*margin - 50, height: 50), addToView: view);
+        // new item name text box
+        enterItemName = ViewBuilder.addTextField(frame: CGRect(x: margin, y: header.frame.maxY + margin, width: view.frame.width - 3*margin - 50, height: 50), addToView: view);
         enterItemName.placeholder = "Enter an item name";
         enterItemName.delegate = self;
         
-        btnAddItem = viewBuilder.addSquareSystemButton(position: CGPoint(x: enterItemName.frame.maxX + margin, y: enterItemName.frame.origin.y), title: "+", addToView: view);
+        // add button
+        btnAddItem = ViewBuilder.addSquareSystemButton(position: CGPoint(x: enterItemName.frame.maxX + margin, y: enterItemName.frame.origin.y), title: "+", addToView: view);
         btnAddItem.addTarget(self, action: #selector(CurrentListViewController.btnAddItemClicked(_:)), for: .touchUpInside);
         
-        
+        // table of all items in current list
         tblItemsInList = UITableView(frame: CGRect(x: margin, y: enterItemName.frame.maxY + margin, width: view.frame.width - 2*margin, height: view.frame.height - enterItemName.frame.maxY - 2*margin), style: .grouped);
         tblItemsInList.setBorder();
         tblItemsInList.alpha = 0.8;
@@ -68,6 +72,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         tblItemsInList.delegate = self;
         view.addSubview(tblItemsInList);
         
+        //taps for hiding options menu and keyboard
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (CurrentListViewController.handlingTaps(_:)));
         tapGestureRecognizer.cancelsTouchesInView = false;
         view.addGestureRecognizer(tapGestureRecognizer);
@@ -75,6 +80,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // The flag is been changed on true while leaving the CurrentListViewController. So it is false in this function only when the function is called for the first time.
         if shouldReloadData{
             lblTitle.text = currentList.name;
             tblItemsInList.reloadData();
@@ -108,13 +114,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     func processTextFieldData(){
         if enterItemName.hasText{
             let itemName = enterItemName.text;
-            addToListItem(itemName: itemName!);
+            addItemToList(itemName: itemName!);
         }
         enterItemName.text = "";
         enterItemName.placeholder = "Enter an item name";
     }
     
-    func addToListItem (itemName: String){
+    func addItemToList (itemName: String){
         var isAlreadyInTheList: Bool = false;
         for i in 0..<currentList.itemList.count{
             if currentList.itemList[i].name == itemName{
@@ -143,6 +149,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - Defining a tableView
     func numberOfSections(in tableView: UITableView) -> Int {
+        // there are two sections, one for unchecked items and one for checked items (items in cart)
         return 2;
     }
     
@@ -188,12 +195,9 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             lblItemCalculations.font = UIFont.systemFont(ofSize: 14);
             lblItemCalculations.textAlignment = .right;
             cell!.contentView.addSubview(lblItemCalculations);
-
             
             let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CurrentListViewController.handlingLongPressOnRow(_:)));
             cell?.addGestureRecognizer(longPressRecognizer);
-            
-
         }
         let checkbox = cell!.contentView.subviews[0] as! Checkbox;
         let lblItemName = cell!.contentView.subviews[1] as! UILabel;
@@ -201,7 +205,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         let lblItemCalculations = cell!.contentView.subviews[3] as! UILabel;
         
         if indexPath.section == 0{
-            
             lblItemName.text = currentList.itemList[indexPath.row].name;
             lblItemCalculations.text = currentList.itemList[indexPath.row].itemQuantityAndUnits.toString();
             checkbox.setChecked(checked: false);
@@ -216,7 +219,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                 btnPhoto.isHidden = true;
                 btnPhoto.tag = -1;
             }
-
         }
         else{
             lblItemName.text = currentList.itemsInTheCart[indexPath.row].name;
@@ -233,17 +235,16 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
                 btnPhoto.isHidden = true;
                 btnPhoto.tag = -1;
             }
-            }
-
+        }
         return cell!;
     }
     
+    //delete item with swipe
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         return .delete;
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        
         if editingStyle == .delete{
             if indexPath.section == 0{
             currentList.itemList.remove(at: indexPath.row);
@@ -257,12 +258,10 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    // MARK: Header of the section "Items in the cart"
+    // MARK: Defining header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        
         return (section == 0 ? 0.1 : 50);
     }
-    
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewContainer = UIView();
@@ -274,14 +273,13 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         headerTitle.font = UIFont.boldSystemFont(ofSize: 16);
         viewContainer.addSubview(headerTitle);
         return viewContainer;
-        
     }
-    
     
     //MARK: footer and its functions
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 50;
     }
+    
     // define view for footer
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         var count = 0;
@@ -298,17 +296,17 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
         viewContainer.layer.borderWidth = 3;
         viewContainer.layer.borderColor = UIColor(colorLiteralRed: 71/255, green: 186/255, blue: 193/255, alpha: 1).cgColor;
         
-        let footerLabel = viewBuilder.addLabel(frame: CGRect(x: 5, y: 10, width: 100, height: 30), text: labelText, addToView: viewContainer);
+        let footerLabel = ViewBuilder.addLabel(frame: CGRect(x: 5, y: 10, width: 100, height: 30), text: labelText, addToView: viewContainer);
         
         let btnTitle = section == 0 ? "Check all" : "Uncheck all";
         
-        let btnCheckUncheckAll = viewBuilder.addSimpleSystemButton(frame: CGRect(x: footerLabel.frame.maxX + margin, y: footerLabel.frame.origin.y, width: 90, height: 30), title: btnTitle, addToView: viewContainer);
+        let btnCheckUncheckAll = ViewBuilder.addSimpleSystemButton(frame: CGRect(x: footerLabel.frame.maxX + margin, y: footerLabel.frame.origin.y, width: 90, height: 30), title: btnTitle, addToView: viewContainer);
         btnCheckUncheckAll.backgroundColor = UIColor.white;
         btnCheckUncheckAll.setBorder();
         btnCheckUncheckAll.addTarget(self, action: #selector(CurrentListViewController.checkUncheckAll(_:)), for: .touchUpInside);
         btnCheckUncheckAll.tag = section;
         
-        let btnDeleteAll = viewBuilder.addSimpleSystemButton(frame: CGRect(x: btnCheckUncheckAll.frame.maxX + margin, y: btnCheckUncheckAll.frame.origin.y, width: 90, height: 30), title: "Delete all", addToView: viewContainer);
+        let btnDeleteAll = ViewBuilder.addSimpleSystemButton(frame: CGRect(x: btnCheckUncheckAll.frame.maxX + margin, y: btnCheckUncheckAll.frame.origin.y, width: 90, height: 30), title: "Delete all", addToView: viewContainer);
         btnDeleteAll.backgroundColor = UIColor.white;
         btnDeleteAll.setBorder();
         btnDeleteAll.addTarget(self, action: #selector(CurrentListViewController.deleteAll(_:)), for: .touchUpInside);
@@ -470,7 +468,6 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     //MARK: Showing and hiding optionsMenu
-    
     // hiding menu if it is shown
     func hideMenuIfItIsShown(){
         if isMenuShown {
@@ -500,6 +497,7 @@ class CurrentListViewController: UIViewController, UITableViewDelegate, UITableV
             isMenuShown = true;
         }
     }
+    
     //returning keyboard and hiding options menu
     func textFieldDidBeginEditing(_ textField: UITextField) {
         enterItemName.becomeFirstResponder();
